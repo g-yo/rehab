@@ -252,7 +252,10 @@
             <div class="card">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h4 class="mb-0">Yoga Session</h4>
-                    <div id="timer" class="text-white h4">05:00</div>
+                    <div class="d-flex">
+                        <div id="time-reached" class="text-white h4 mr-3">Time: 0 min</div>
+                        <div id="timer" class="text-white h4">5 min remaining</div>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="text-center mb-3">
@@ -286,7 +289,6 @@
 
                     <div class="text-center mb-3">
                         <button id="startSession" class="btn btn-primary btn-lg">Start Session</button>
-                        <button id="cameraAccess" class="btn btn-secondary btn-lg ml-2">Enable Camera</button>
                     </div>
 
                     <div class="text-center">
@@ -313,22 +315,21 @@
     
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/posenet"></script>
 <script>
-// List of yoga poses with their YouTube video IDs
+// List of yoga poses with their YouTube video URLs
 const yogaPoses = [
-    { name: "Mountain Pose (Tadasana)", videoId: "9W5WNPlTeqs" },
-    { name: "Tree Pose (Vrksasana)", videoId: "wdln9qWYloU" },
-    { name: "Warrior I (Virabhadrasana I)", videoId: "5rT-sCgf0ow" },
-    { name: "Warrior II (Virabhadrasana II)", videoId: "4Ejz7IgODlU" },
-    { name: "Triangle Pose (Trikonasana)", videoId: "upFYlxZHif0" },
-    { name: "Downward-Facing Dog (Adho Mukha Svanasana)", videoId: "YqOqM79McYY" },
-    { name: "Child's Pose (Balasana)", videoId: "eqVMAPM00DM" },
-    { name: "Cobra Pose (Bhujangasana)", videoId: "zgpbZWxJlt0" },
-    { name: "Cat-Cow Stretch (Marjaryasana-Bitilasana)", videoId: "kqnua4rHVVA" },
-    { name: "Bridge Pose (Setu Bandha Sarvangasana)", videoId: "NnbvPeAIhmA" },
-    { name: "Corpse Pose (Savasana)", videoId: "LI6RznQGNdI" },
-    { name: "Sun Salutation (Surya Namaskar)", videoId: "8AakYeM23sY" }
+    { name: "Mountain Pose (Tadasana)", videoUrl: "https://www.youtube.com/embed/9W5WNPlTeqs" },
+    { name: "Tree Pose (Vrksasana)", videoUrl: "https://www.youtube.com/embed/wdln9qWYloU" },
+    { name: "Warrior I (Virabhadrasana I)", videoUrl: "https://www.youtube.com/embed/5rT-sCgf0ow" },
+    { name: "Warrior II (Virabhadrasana II)", videoUrl: "https://www.youtube.com/embed/4Ejz7IgODlU" },
+    { name: "Triangle Pose (Trikonasana)", videoUrl: "https://www.youtube.com/embed/upFYlxZHif0" },
+    { name: "Downward-Facing Dog (Adho Mukha Svanasana)", videoUrl: "https://www.youtube.com/embed/YqOqM79McYY" },
+    { name: "Child's Pose (Balasana)", videoUrl: "https://www.youtube.com/embed/eqVMAPM00DM" },
+    { name: "Cobra Pose (Bhujangasana)", videoUrl: "https://www.youtube.com/embed/zgpbZWxJlt0" },
+    { name: "Cat-Cow Stretch (Marjaryasana-Bitilasana)", videoUrl: "https://www.youtube.com/embed/kqnua4rHVVA" },
+    { name: "Bridge Pose (Setu Bandha Sarvangasana)", videoUrl: "https://www.youtube.com/embed/NnbvPeAIhmA" },
+    { name: "Corpse Pose (Savasana)", videoUrl: "https://www.youtube.com/embed/LI6RznQGNdI" },
+    { name: "Sun Salutation (Surya Namaskar)", videoUrl: "https://www.youtube.com/embed/8AakYeM23sY" }
 ];
 
 let currentPoseIndex = 0;
@@ -342,9 +343,10 @@ let userPresent = false;
 let presenceCheckInterval;
 let lastDetectionTime = 0;
 const ABSENCE_THRESHOLD = 3000; // 3 seconds without detection to consider user absent
-let poseNet = null;
 let video;
 let cameraAccessGranted = false;
+let totalTimeReached = 0; // Track total time spent in session
+let autoStartEnabled = true; // Enable auto-start when user is detected
 
 // Speech synthesis function
 function speak(text) {
@@ -367,9 +369,8 @@ function updateDisplay() {
 
 function updateTimer() {
     const minutes = Math.floor(timeLeft / 60);
-    const seconds = timeLeft % 60;
     document.getElementById('timer').textContent = 
-        `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        `${minutes} min remaining`;
 
     // Voice announcements
     if (timeLeft === 300) { // Start of pose
@@ -384,10 +385,23 @@ function updateTimer() {
         speak(timeLeft.toString());
     }
 
+    // Update time reached
+    if (isSessionActive) {
+        totalTimeReached++;
+        updateTimeReached();
+    }
+
     timeLeft--;
     if (timeLeft < 0) {
         startBreak();
     }
+}
+
+// Function to update time reached display
+function updateTimeReached() {
+    const minutesReached = Math.floor(totalTimeReached / 60);
+    document.getElementById('time-reached').textContent = 
+        `Time: ${minutesReached} min`;
 }
 
 function startBreak() {
@@ -398,8 +412,7 @@ function startBreak() {
     speak("Take a short break");
     
     breakTimer = setInterval(function() {
-        const seconds = breakTimeLeft % 60;
-        document.getElementById('timer').textContent = `00:${seconds.toString().padStart(2, '0')}`;
+        document.getElementById('timer').textContent = `${Math.ceil(breakTimeLeft / 60)} min remaining`;
         
         breakTimeLeft--;
         if (breakTimeLeft < 0) {
@@ -427,23 +440,27 @@ function nextPose() {
     }
     
     updateDisplay();
-    player.loadVideoById(yogaPoses[currentPoseIndex].videoId);
+    // Extract video ID from the URL
+    const videoId = yogaPoses[currentPoseIndex].videoUrl.split('/').pop();
+    player.loadVideoById(videoId);
     startTimer();
 }
 
 function startSession() {
     if (!cameraAccessGranted) {
-        speak("Please enable camera access first to track your presence during the session");
-        document.getElementById('cameraAccess').classList.add('btn-pulse');
+        speak("Please allow camera access first to track your presence during the session");
         return;
     }
     
     isSessionActive = true;
     document.getElementById('startSession').textContent = "Pause";
     document.getElementById('startSession').classList.replace('btn-primary', 'btn-warning');
-    player.loadVideoById(yogaPoses[currentPoseIndex].videoId);
+    // Extract video ID from the URL
+    const videoId = yogaPoses[currentPoseIndex].videoUrl.split('/').pop();
+    player.loadVideoById(videoId);
     player.playVideo();
     startTimer();
+    speak(`Starting yoga session with ${yogaPoses[currentPoseIndex].name}`);
 }
 
 function pauseSession() {
@@ -475,7 +492,7 @@ function endSession() {
     speak("Congratulations! You have completed your yoga session.");
 }
 
-// User presence detection with PoseNet
+// User presence detection with simple camera
 async function setupCamera() {
     const statusIndicator = document.getElementById('status-indicator');
     video = document.getElementById('webcam');
@@ -491,6 +508,13 @@ async function setupCamera() {
         return new Promise((resolve) => {
             video.onloadedmetadata = () => {
                 video.play();
+                cameraAccessGranted = true;
+                statusIndicator.textContent = "Camera ready - user detection active";
+                statusIndicator.classList.replace('alert-info', 'alert-success');
+                speak("Camera access granted. You can now start your yoga session.");
+                
+                // Start simple presence detection
+                startPresenceDetection();
                 resolve(video);
             };
         });
@@ -502,105 +526,99 @@ async function setupCamera() {
     }
 }
 
-async function loadPoseNet() {
+// Simple presence detection using camera pixel analysis
+function startPresenceDetection() {
     const statusIndicator = document.getElementById('status-indicator');
-    try {
-        statusIndicator.textContent = "Loading pose detection model...";
-        poseNet = await posenet.load({
-            architecture: 'MobileNetV1',
-            outputStride: 16,
-            inputResolution: { width: 320, height: 240 },
-            multiplier: 0.75
-        });
-        statusIndicator.textContent = "Camera ready - user detection active";
-        statusIndicator.classList.replace('alert-info', 'alert-success');
-        cameraAccessGranted = true;
-        document.getElementById('cameraAccess').textContent = "Camera Enabled";
-        document.getElementById('cameraAccess').classList.replace('btn-secondary', 'btn-success');
-        document.getElementById('cameraAccess').disabled = true;
-        speak("Camera access granted. You can now start your yoga session.");
-        
-        // Start detecting poses
-        detectPoseInRealTime();
-    } catch (error) {
-        console.error('Error loading PoseNet:', error);
-        statusIndicator.textContent = "Error loading pose detection model";
-        statusIndicator.classList.replace('alert-info', 'alert-danger');
-    }
-}
-
-async function detectPoseInRealTime() {
-    const statusIndicator = document.getElementById('status-indicator');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
     
-    async function poseDetectionFrame() {
+    // Set canvas size to match video
+    canvas.width = video.width;
+    canvas.height = video.height;
+    
+    function detectMotion() {
         if (!cameraAccessGranted) return;
         
         try {
-            const pose = await poseNet.estimateSinglePose(video, {
-                flipHorizontal: true
-            });
+            // Draw current video frame to canvas
+            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
             
-            // Check if a person is detected with reasonable confidence
+            // Get image data to analyze
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            
+            // Simple check: if there's enough non-black pixels, consider user present
+            let nonBlackPixels = 0;
+            const threshold = 20; // Lower brightness threshold for better detection
+            const sampleRate = 5; // Check more pixels for better accuracy
+            
+            for (let i = 0; i < data.length; i += 4 * sampleRate) {
+                // Check if pixel is not too dark (simple presence detection)
+                if (data[i] > threshold || data[i+1] > threshold || data[i+2] > threshold) {
+                    nonBlackPixels++;
+                }
+            }
+            
             const now = Date.now();
-            const keypointsWithConfidence = pose.keypoints.filter(keypoint => keypoint.score > 0.3);
-            
-            if (keypointsWithConfidence.length > 5) { // If we detect at least 5 body parts
+            // If enough non-black pixels, consider user present (adjusted for better detection)
+            if (nonBlackPixels > (canvas.width * canvas.height) / (sampleRate * 30)) {
                 lastDetectionTime = now;
                 
-                if (!userPresent && isSessionActive === false) {
+                if (!userPresent) {
                     userPresent = true;
-                    statusIndicator.textContent = "User detected - ready to start";
+                    statusIndicator.textContent = "User detected";
                     statusIndicator.classList.replace('alert-danger', 'alert-success');
-                } else if (!userPresent && isSessionActive === true) {
-                    userPresent = true;
-                    statusIndicator.textContent = "User returned - resuming session";
-                    statusIndicator.classList.replace('alert-danger', 'alert-success');
-                    speak("Welcome back! Resuming your session.");
-                    resumeSession();
+                    
+                    // Auto-start session if enabled and not already active
+                    if (autoStartEnabled && !isSessionActive) {
+                        speak("User detected. Starting yoga session.");
+                        startSession();
+                    } else if (isSessionActive) {
+                        // User returned during an active but paused session
+                        statusIndicator.textContent = "User returned - resuming session";
+                        speak("Welcome back! Resuming your session.");
+                        resumeSession();
+                    }
                 }
-            } else if (now - lastDetectionTime > ABSENCE_THRESHOLD && userPresent && isSessionActive) {
+            } else if (now - lastDetectionTime > ABSENCE_THRESHOLD && userPresent) {
                 userPresent = false;
                 statusIndicator.textContent = "User not detected - session paused";
                 statusIndicator.classList.replace('alert-success', 'alert-danger');
-                speak("Session paused. Please come back to continue.");
-                pauseSession();
+                
+                if (isSessionActive) {
+                    speak("You seem to have left. Session paused. Please come back to continue.");
+                    pauseSession();
+                }
             }
             
             // Continue detection
-            requestAnimationFrame(poseDetectionFrame);
+            requestAnimationFrame(detectMotion);
         } catch (error) {
-            console.error('Error during pose detection:', error);
-            statusIndicator.textContent = "Error in pose detection";
+            console.error('Error during presence detection:', error);
+            statusIndicator.textContent = "Error in user detection";
             statusIndicator.classList.replace('alert-success', 'alert-danger');
             
             // Try to recover
-            setTimeout(poseDetectionFrame, 2000);
+            setTimeout(detectMotion, 2000);
         }
     }
     
-    poseDetectionFrame();
+    detectMotion();
 }
 
-// Event Listeners
-document.getElementById('startSession').addEventListener('click', function() {
-    if (isSessionActive) {
-        pauseSession();
-    } else {
-        if (currentPoseIndex === 0 && timeLeft === 300) {
-            startSession();
-        } else {
-            resumeSession();
-        }
-    }
-});
-
-document.getElementById('cameraAccess').addEventListener('click', async function() {
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', async function() {
+    // Initialize display
+    updateDisplay();
+    updateTimer();
+    updateTimeReached();
+    
+    // Auto-access camera on page load
     try {
         await setupCamera();
-        await loadPoseNet();
     } catch (error) {
-        console.error('Failed to set up camera or load PoseNet:', error);
-        speak("Unable to access camera. Please check your camera permissions and try again.");
+        console.error('Failed to auto-setup camera:', error);
+        speak("Automatic camera setup failed. Please check your camera permissions and refresh the page to try again.");
     }
 });
 
@@ -611,10 +629,13 @@ let firstScriptTag = document.getElementsByTagName('script')[0];
 firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
 function onYouTubeIframeAPIReady() {
+    // Extract video ID from the URL
+    const videoId = yogaPoses[0].videoUrl.split('/').pop();
+    
     player = new YT.Player('yoga-video', {
         height: '100%',
         width: '100%',
-        videoId: yogaPoses[0].videoId,
+        videoId: videoId,
         playerVars: {
             'playsinline': 1,
             'controls': 0,
@@ -632,9 +653,17 @@ function onPlayerReady(event) {
     updateTimer();
 }
 
-// Initialize display
-updateDisplay();
-updateTimer();
+document.getElementById('startSession').addEventListener('click', function() {
+    if (isSessionActive) {
+        pauseSession();
+    } else {
+        if (currentPoseIndex === 0 && timeLeft === 300) {
+            startSession();
+        } else {
+            resumeSession();
+        }
+    }
+});
 </script>
 
 </body>
