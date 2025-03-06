@@ -1,0 +1,114 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Back End</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        .admin-dashboard-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+        }
+        .admin-dashboard-option-box {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            width: 200px;
+            transition: transform 0.3s ease;
+            position: relative;
+        }
+        .admin-dashboard-option-box:hover {
+            transform: translateY(-5px);
+        }
+        .admin-dashboard-option-box i {
+            font-size: 2em;
+            margin-bottom: 10px;
+            color: #007bff;
+        }
+        .admin-dashboard-option-box span {
+            display: block;
+            font-size: 1.1em;
+        }
+        .admin-dashboard-title {
+            text-align: center;
+            margin: 20px 0;
+            color: #333;
+        }
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #dc3545;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h2 class="admin-dashboard-title">BACK-END MANAGEMENT</h2>
+    <div class="admin-dashboard-options">
+        <a href="{% url 'admin_user_list' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-users"></i>
+            <span>Users</span>
+        </a>
+        <a href="{% url 'gallery' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-tasks"></i>
+            <span>Gallery</span>
+        </a>
+        <a href="{% url 'staff_list' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-user-tie"></i>
+            <span>Staff</span>
+        </a>
+        <a href="{% url 'conference_list' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-video"></i>
+            <span>Video Conferences</span>
+        </a>
+        <a href="{% url 'schedule_conference' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-calendar-plus"></i>
+            <span>Schedule Conference</span>
+        </a>
+        <a href="{% url 'addiction_list' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-clipboard-list"></i>
+            <span>Applications</span>
+            {% if pending_applications > 0 %}
+            <div class="notification-badge">{{ pending_applications }}</div>
+            {% endif %}
+        </a>
+        <a href="{% url 'patients' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-procedures"></i>
+            <span>Patients</span>
+        </a>
+        <a href="{% url 'patient_list' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-procedures"></i>
+            <span>Patient List</span>
+        </a>
+        <a href="{% url 'add_yoga' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-spa"></i>
+            <span>Add Yoga</span>
+        </a>
+        <a href="{% url 'yoga_list' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-list"></i>
+            <span>Yoga Classes</span>
+        </a>
+        <a href="{% url 'manage_group_conference' %}" class="admin-dashboard-option-box">
+            <i class="fas fa-users-cog"></i>
+            <span>Manage Group Conference</span>
+        </a>
+    </div>
+</body>
+</html>

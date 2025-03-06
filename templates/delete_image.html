@@ -1,0 +1,20 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Delete Image</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h2 class="gallery-form-title">Delete Image</h2>
+    <p>Are you sure you want to delete this image?</p>
+    <img src="{{ image.image.url }}" alt="{{ image.event_name }}" class="gallery-delete-image-preview">
+    <form method="post" class="gallery-form">
+        {% csrf_token %}
+        <button type="submit" class="gallery-form-button">Delete</button>
+        <a href="{% url 'gallery' %}" class="gallery-cancel-button">Cancel</a>
+    </form>
+</body>
+</html>

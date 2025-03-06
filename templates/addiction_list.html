@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Applications - Rehab Center</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .header {
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 10px 20px;
+    }
+
+    .logo-bar img {
+        height: 50px;
+    }
+
+    .nav-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links li {
+        margin: 0 15px;
+    }
+
+    .nav-links a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .search-bar input {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        width: 200px;
+    }
+
+    .user-icon {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .user-icon img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+    }
+
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        min-width: 200px;
+        z-index: 1000;
+    }
+
+    .user-icon:hover .user-dropdown {
+        display: block;
+    }
+
+    .user-info {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+    }
+
+    .user-info img {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    .user-dropdown a {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+    .user-dropdown a i {
+        margin-right: 10px;
+        width: 20px;
+    }
+
+    .user-dropdown a:hover {
+        background-color: #f8f9fa;
+    }
+
+    main {
+        min-height: calc(100vh - 180px);
+        padding: 20px 0;
+    }
+
+    .footer {
+        background-color: #f8f9fa;
+        padding: 20px 0;
+        text-align: center;
+    }
+    
+<style>
+.badge {
+    padding: 8px 12px;
+    font-size: 0.9em;
+}
+.badge-success {
+    background-color: #28a745;
+}
+.badge-danger {
+    background-color: #dc3545;
+}
+.badge-warning {
+    background-color: #ffc107;
+    color: #000;
+}
+.staff-assign-form {
+    max-width: 200px;
+}
+.form-control-sm {
+    font-size: 0.875rem;
+}
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+</style>
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a></li>
+                <a href="{% url 'user_gallery' %}">Gallery</a> 
+                {% if user.is_authenticated and user.is_patient %}
+                <li><a href="{% url 'patient_activities' %}">Activities</a></li>
+                {% endif %}
+                <li><a href="{% url 'about' %}">About Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/use.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="{% url 'user_dashboard' %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    {% if user.is_patient %}
+                    <a href="{% url 'patient_activities' %}">
+                        <i class="fas fa-tasks"></i> My Activities
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'user_profile' %}">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    {% else %}
+                    <a href="{% url 'user_register' %}">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                    <a href="{% url 'user_login' %}">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        
+<div class="container mt-4">
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">Manage Treatment Applications</h4>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Age</th>
+                            <th>Type</th>
+                            <th>Contact</th>
+                            <th>Email</th>
+                            <th>Status</th>
+                            <th>Assigned Staff</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for addiction in addiction_cases %}
+                        <tr>
+                            <td>{{ addiction.name }}</td>
+                            <td>{{ addiction.age }}</td>
+                            <td>{{ addiction.get_addiction_type_display }}</td>
+                            <td>{{ addiction.contact_number }}</td>
+                            <td>{{ addiction.patient_email }}</td>
+                            <td>
+                                <span class="badge {% if addiction.status == 'approved' %}badge-success{% elif addiction.status == 'rejected' %}badge-danger{% else %}badge-warning{% endif %}">
+                                    {{ addiction.get_status_display }}
+                                </span>
+                            </td>
+                            <td>
+                                <form method="post" class="staff-assign-form">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="assign_staff">
+                                    <input type="hidden" name="addiction_id" value="{{ addiction.id }}">
+                                    <select name="staff_id" class="form-control form-control-sm" {% if addiction.status == 'rejected' %}disabled{% endif %}>
+                                        <option value="">Select Staff</option>
+                                        {% for staff in staffs %}
+                                            <option value="{{ staff.id }}" {% if addiction.assigned_staff == staff %}selected{% endif %}>
+                                                {{ staff.name }} - {{ staff.position }}
+                                            </option>
+                                        {% endfor %}
+                                    </select>
+                                    {% if addiction.status != 'rejected' %}
+                                    <button type="submit" class="btn btn-sm btn-outline-primary mt-1">
+                                        <i class="fas fa-user-plus"></i> Assign
+                                    </button>
+                                    {% endif %}
+                                </form>
+                            </td>
+                            <td>
+                                {% if addiction.status == 'pending' %}
+                                <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="approve">
+                                    <input type="hidden" name="addiction_id" value="{{ addiction.id }}">
+                                    <button type="submit" class="btn btn-sm btn-success">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
+                                <form method="post" class="d-inline">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="action" value="reject">
+                                    <input type="hidden" name="addiction_id" value="{{ addiction.id }}">
+                                    <button type="submit" class="btn btn-sm btn-danger">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <button type="button" class="btn btn-sm btn-info" data-toggle="modal" data-target="#detailsModal{{ addiction.id }}">
+                                    <i class="fas fa-eye"></i> Details
+                                </button>
+                            </td>
+                        </tr>
+
+                        <!-- Details Modal -->
+                        <div class="modal fade" id="detailsModal{{ addiction.id }}" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Application Details</h5>
+                                        <button type="button" class="close" data-dismiss="modal">
+                                            <span>&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <p><strong>Description:</strong> {{ addiction.description }}</p>
+                                        <p><strong>Guider Name:</strong> {{ addiction.guider_name }}</p>
+                                        <p><strong>Guider Contact:</strong> {{ addiction.guider_contact_number }}</p>
+                                        <p><strong>Guider Relationship:</strong> {{ addiction.guider_relationship }}</p>
+                                        <p><strong>Submitted On:</strong> {{ addiction.created_at|date:"F d, Y" }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">{% now "Y" %} Rehab Center. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    
+</body>
+</html>

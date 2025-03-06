@@ -1,0 +1,160 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - ReVive Rehab Center</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* About Us Page Styles */
+        .about-section {
+            margin-top:1px;
+
+            padding: 40px;
+            background-color: #f9f9f9;
+        }
+        .auth-container {
+            display: flex;
+margin-right:1500px;
+margin-left: 0;
+/* margin-top:550px; */
+            height: 250px;
+            width:100%;
+            background-color: #ffe100;
+            margin-top:0;
+            padding-top:0;     
+        z-index: -1;
+        }
+        .about-section h1, .about-section h2 {
+            color: #333;
+        }
+
+        .about-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .about-section h2 {
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .about-section h2:hover {
+            color: #ffc107;
+        }
+
+        .about-section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .about-section ul li {
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .about-section ul li:hover {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a>
+                    <!-- <ul class="dropdown">
+                        <li><a href="#">Service 1</a></li>
+                        <li><a href="#">Service 2</a></li>
+                    </ul> -->
+                </li>
+                <a href="{% url 'user_gallery' %}">Gallery</a> 
+                                <li><a href="about">About Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/use.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="#">Dashboard</a>
+                    <a href="#">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                    <a href="{% url 'user_register' %}">Register</a>
+                    <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+      </header>
+    <div class="auth-container">
+        <h2 class="about-section">ABOUT US</h2>
+    </div>
+    <main>
+        <section class="about-section">
+            <h1 style="color:black;font-size: 50px;text-align: center;">ABOUT US</h1>
+            <p>Welcome to ReVive Rehab Center, where we are dedicated to helping young individuals between the ages of 16 to 22 overcome addiction and reclaim their lives. Our mission is to provide comprehensive, compassionate, and personalized care to each of our patients, ensuring their journey to recovery is as smooth and supportive as possible.</p>
+
+            <h2>Our Approach</h2>
+            <p>At ReVive, we believe in a holistic approach to rehabilitation. We understand that addiction affects not only the individual but also their families and communities. Our programs are designed to address the physical, emotional, and psychological aspects of addiction, offering a range of services including:</p>
+            <ul>
+                <li>Counseling and Therapy</li>
+                <li>Medical Care</li>
+                <li>Support Groups</li>
+                <li>Life Skills Training</li>
+                <li>Recreational Activities</li>
+                <li>Family Support Programs</li>
+            </ul>
+
+            <h2>Our Team</h2>
+            <p>Our dedicated team of professionals includes experienced counselors, medical staff, and support workers who are passionate about helping our patients achieve lasting recovery. We work collaboratively to create personalized treatment plans that meet the unique needs of each individual.</p>
+
+            <h2>Our Facilities</h2>
+            <p>ReVive is located in the serene and peaceful environment of Kerala, India, providing a tranquil setting for healing and recovery. Our state-of-the-art facilities are equipped with all the necessary amenities to ensure our patients' comfort and well-being.</p>
+
+            <h2>Contact Us</h2>
+            <p>If you or someone you know is struggling with addiction, don't hesitate to reach out to us. We are here to help you take the first step towards a healthier and happier future.</p>
+
+            <p>Contact us at <a href="{% url 'contact' %}">Contact Us</a>.</p>
+        </section>
+    </main>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
+                <p>Welcome to Rehab. Find your relief.</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com" target="_blank"><img src="{% static 'images/fb.png' %}" alt="Facebook"></a>
+                <a href="https://www.instagram.com" target="_blank"><img src="{% static 'images/ig.png' %}" alt="Instagram"></a>
+                <a href="https://www.twitter.com" target="_blank"><img src="{% static 'images/x.png' %}" alt="Twitter"></a>
+            </div>
+            <div class="footer-menus">
+                <p>
+                    <a href="#">Home</a> / 
+                    <a href="#">Services</a> / 
+                    <a href="#">Gallery</a> / 
+                    <a href="#">About Us</a> / 
+                    <a href="#">Contact Us</a> / 
+                    <a href="#">Privacy Policy</a> / 
+                    <a href="#">Terms and Conditions</a>
+                </p>
+            </div>
+        </div>
+        <p>&copy; 2025 Rehab Center. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,226 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<body>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <body>
+      <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a>
+                    <!-- <ul class="dropdown">
+                        <li><a href="#">Service 1</a></li>
+                        <li><a href="#">Service 2</a></li>
+                    </ul> -->
+                </li>
+                <a href="{% url 'user_gallery' %}">Gallery</a> 
+                                <li><a href="about">About Us</a></li>
+                <li><a href="contact">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/use.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="{% url 'user_dashboard' %}">Dashboard</a>
+                    <a href="{% url 'user_profile' %}">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                    <a href="{% url 'user_register' %}">Register</a>
+                    <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+      </header>
+<!-- <div class="overlay" id="overlay">
+    <div class="overlay-content">
+        <img src="{% static 'images/logo.png' %}" alt="Logo">
+        <button class="close-button" id="close-button">&times;</button>
+    </div></div> -->
+
+    <div class="slider-section">
+        <div class="slider-content">
+            <img src="{% static 'images/backround1.jpg' %}" alt="Slider Image">
+        </div>
+    </div>
+    
+    <div class="apply-section" style="text-align: center; padding: 20px 0; background: #f8f9fa;">
+        <a href="{% url 'apply_treatment' %}" class="apply-button" style="display: inline-block; padding: 15px 30px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; font-size: 18px; transition: background 0.3s;">Apply for Treatment</a>
+    </div>
+    
+  <main>
+<!-- Section 1 -->
+<section class="section right-image">
+    <div class="text">
+        <h2 style="font-size: 26px;">Buy a <b style="color:yellow">SUNFLOWER</b> for someone</h2>
+        <p style="font-size: 20px;">At Rehab, the sunflower represents hope, resilience, and a fresh start. Just as a sunflower turns towards the light, our fighters—those who have bravely overcome addiction—move toward a brighter future. Buying a sunflower for someone symbolizes encouragement, support, and the belief that they can continue their journey of recovery with strength and confidence. It serves as a reminder that every day is a chance to grow, heal, and shine.</p>
+
+        <p style="font-size: 20px;">When someone completes their recovery journey, gifting them a sunflower is more than just a kind gesture; it is a message of empowerment. It acknowledges their struggles, celebrates their courage, and encourages them to keep moving forward. Whether it’s a friend, a loved one, or even yourself, this simple yet powerful flower carries the warmth of understanding and the promise of new opportunities.</p>
+            
+        <p style="font-size: 20px;">Join us in spreading positivity by purchasing a sunflower for a fighter. Your support not only brightens their day but also reinforces the sense of community and care that makes recovery possible. Let this sunflower be a lasting emblem of perseverance and renewal, reminding every fighter that they are never alone in their journey.</p>
+    </div>
+    <div class="image">
+        <img src="{% static 'images/image-sec1.jpg' %}" alt="Section 1 Image">
+    </div>
+</section>
+
+<!-- Section 2 -->
+<section class="section left-image">
+    <div class="image">
+        <img src="{% static 'images/image-sec2.jpg' %}" alt="Section 2 Image">
+    </div>
+    <div class="text">
+        <h2 style="font-size: 28px;">About Us – Guiding Youth Towards a Brighter Future</h2>  
+        <p style="font-size: 20px;">At ReVive, we are dedicated to helping young individuals break free from addiction and reclaim their lives. Our mission is to provide a safe, supportive, and empowering environment where youth can heal and grow. We understand the unique challenges faced by individuals aged 16 to 22, and our specialized programs are designed to address their specific needs. Through counseling, group therapy, and structured recovery plans, we guide our fighters towards a healthier and more fulfilling life.</p>  
+        
+        <p style="font-size: 20px;">In today’s world, youth are increasingly struggling with various forms of addiction, including substance abuse, social media dependency, gaming addiction, and vaping. The easy availability of harmful substances and the digital distractions of modern life make it difficult for young individuals to focus on their well-being. We believe that addiction is not just a personal struggle but a societal challenge that requires awareness, education, and collective effort. Our programs are built to not only help individuals recover but also equip them with the tools and mindset needed to resist future temptations.</p>  
+        
+        <p style="font-size: 20px;">Our team is passionate about making a difference in the lives of young fighters. We provide personalized care, emotional support, and a strong sense of community to ensure that no one has to face addiction alone. At ReVive, recovery is not just about overcoming addiction—it’s about building a new life filled with purpose, hope, and strength. Together, we strive to turn every challenge into an opportunity for growth, helping our fighters step into a future full of possibilities.</p>
+        
+    </div>
+</section>
+
+<!-- Section 3 -->
+<section class="section right-image">
+    <div class="text">
+        <h2 style="font-size: 28px;">How Our Service Works</h2>  
+        <p style="font-size: 20px;">At ReVive, we provide a structured and supportive recovery program designed specifically for youth aged 16-22. Our service begins with a simple registration process, where both the fighter and their parents can enroll in our 30-day recovery plan. We believe that family plays a crucial role in the healing journey, so parental involvement is required throughout the entire program. Together, we create a nurturing environment that fosters trust, understanding, and long-term recovery.</p>  
+        
+        <p style="font-size: 20px;">Our 30-day program includes a variety of interactive sessions, counseling, and group activities designed to help fighters regain control of their lives. Every session is carefully planned to address both emotional and psychological challenges, ensuring that our fighters receive the support they need. Parents also participate in dedicated classes, equipping them with the knowledge and skills to assist their child through this transformative journey.</p>  
+        
+        <p style="font-size: 20px;">Beyond counseling, we provide engaging activities such as mindfulness training, fitness programs, and skill-building workshops. These activities help fighters develop positive habits and coping mechanisms, reducing the risk of relapse. Our goal is to not just help individuals overcome addiction but to empower them with a new perspective on life. At ReVive, we stand by our fighters and their families, guiding them toward a brighter and healthier future.</p>
+        
+    </div>
+    <div class="image">
+        <img src="{% static 'images/image-sec3.jpg' %}" alt="Section 3 Image">
+    </div>
+</section>
+
+<!-- Section 4 -->
+<!-- <section class="section left-image">
+    <div class="image">
+        <img src="{% static 'images/image4.jpg' %}" alt="Section 4 Image">
+    </div>
+    <div class="text">
+        <h2>Section 4: Testimonials</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam eget purus luctus, volutpat neque id, hendrerit lacus.</p>
+    </div>
+</section> -->
+
+<!-- Section 5 -->
+<!-- <section class="section right-image">
+    <div class="text">
+        <h2>Section 5: Get in Touch</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis non magna quis eros fermentum tincidunt.</p>
+    </div>
+    <div class="image">
+        <img src="{% static 'images/image5.jpg' %}" alt="Section 5 Image">
+    </div>
+</section> -->
+
+  <div class="stats-container">
+    <div class="stat-item">
+      <div class="number" id="projects">0</div>
+      <div class="label">Fighters</div>
+    </div>
+    <div class="stat-item">
+      <div class="number" id="clients">0</div>
+      <div class="label">Staffs</div>
+    </div>
+    <div class="stat-item">
+      <div class="number" id="team">0</div>
+      <div class="label">Activities</div>
+    </div>
+    <div class="stat-item">
+      <div class="number" id="internships">0</div>
+      <div class="label">Years Experience</div>
+    </div>
+  </div>
+  <!-- <div class="container">
+    <div class="bordered-text" id="borderedText">REHAB</div>
+</div> -->
+<!-- <div class="main-content"> -->
+    <!-- <p>Scroll down to see the effect...</p>
+    <p style="margin-bottom: 2000px;">Keep scrolling...</p>
+</div> -->
+
+
+<section class="testimonials">
+    <h2>TESTIMONIALS</h2>
+    <p class="review-heading">Review from our fighters</p>
+    <div class="testimonial-slider">
+        <div class="testimonial active">
+            <img src="{% static 'images/user.jpg' %}" alt="User 1" class="testimonial-img">
+            <div class="testimonial-text">
+                <p>“Rehab center changed my life. The support I received was outstanding and truly made a difference.”</p>
+                <h3>John Doe</h3>
+            </div>
+        </div>
+        <div class="testimonial">
+            <img src="{% static 'images/user.jpg' %}" alt="User 2" class="testimonial-img">
+            <div class="testimonial-text">
+                <p>“I am grateful for the compassionate care and guidance provided by the team. Thank you!”</p>
+                <h3>Jane Smith</h3>
+            </div>
+        </div>
+        <div class="testimonial">
+            <img src="{% static 'images/user.jpg' %}" alt="User 3" class="testimonial-img">
+            <div class="testimonial-text">
+                <p>“The program helped me overcome my addiction and rebuild my life. Highly recommended!”</p>
+                <h3>Emily Johnson</h3>
+            </div>
+        </div>
+    </div>
+    <div class="corner-images">
+        <img src="{% static 'images/user.jpg' %}" alt="User 4" class="corner-img top-left">
+        <img src="{% static 'images/user.jpg' %}" alt="User 5" class="corner-img top-right">
+        <img src="{% static 'images/user.jpg' %}" alt="User 6" class="corner-img bottom-right">
+    </div>
+</section>
+<section class="contact-us">
+    <h2>HAVE A QUESTION? FEEL FREE TO ASK</h2>
+    <a href="mailto:geoaugustion@gmail.com" class="contact-button">CONTACT US</a>
+</section>
+
+
+  <script src="{% static 'js/script.js' %}"></script>
+  <footer class="footer">
+    <div class="footer-content">
+        <div class="footer-logo">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+            <p>Welcome to Rehab. Find your relief.</p>
+        </div>
+        <div class="footer-social">
+            <a href="https://www.facebook.com" target="_blank"><img src="{% static 'images/fb.png' %}" alt="Facebook"></a>
+            <a href="https://www.instagram.com" target="_blank"><img src="{% static 'images/ig.png' %}" alt="Instagram"></a>
+            <a href="https://www.twitter.com" target="_blank"><img src="{% static 'images/x.png' %}" alt="Twitter"></a>
+        </div>
+        <div class="footer-menus">
+            <p>
+                <a href="#">Home</a> / 
+                <a href="#">Services</a> / 
+                <a href="#">Gallery</a> / 
+                <a href="#">About Us</a> / 
+                <a href="#">Contact Us</a> / 
+                <a href="#">Privacy Policy</a> / 
+                <a href="#">Terms and Conditions</a>
+            </p>
+        </div>
+    </div>
+    <p>&copy; 2025 Rehab Center. All Rights Reserved.</p>
+</footer>
+
+</body>
