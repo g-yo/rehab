@@ -152,3 +152,7 @@ import os
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 AUTH_USER_MODEL = 'apprehab.CustomUser'
+
+STATICFILES_DIRS = [
+    BASE_DIR / 'statics',  # Include your `statics` directory here
+]
