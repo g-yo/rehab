@@ -202,11 +202,12 @@
     <main>
         
 <div class="container mt-4">
-    <div class="row mb-4">
+    <!-- Yoga Templates Section -->
+    <!-- <div class="row mb-4">
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0">Active Yoga Sessions</h4>
+                    <h4 class="mb-0">Active Yoga Templates</h4>
                     <a href="{% url 'add_yoga' %}" class="btn btn-light">
                         <i class="fas fa-plus"></i> Add New Yoga
                     </a>
@@ -228,8 +229,8 @@
                                 {% for yoga in active_yogas %}
                                 <tr>
                                     <td>{{ yoga.name }}</td>
-                                    <td>{{ yoga.patient.get_full_name }}</td>
-                                    <td>{{ yoga.staff.name }} ({{ yoga.staff.position }})</td>
+                                    <td>{% if yoga.patient %}{{ yoga.patient.get_full_name }}{% else %}Not assigned{% endif %}</td>
+                                    <td>{% if yoga.staff %}{{ yoga.staff.name }} ({{ yoga.staff.position }}){% else %}Not assigned{% endif %}</td>
                                     <td>{{ yoga.duration }} seconds</td>
                                     <td>{{ yoga.description|truncatechars:50 }}</td>
                                     <td>
@@ -243,7 +244,68 @@
                                 </tr>
                                 {% empty %}
                                 <tr>
-                                    <td colspan="6" class="text-center">No active yoga sessions found</td>
+                                    <td colspan="6" class="text-center">No active yoga templates found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Yoga Sessions Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Scheduled Yoga Sessions</h4>
+                    <a href="{% url 'schedule_yoga' %}" class="btn btn-light">
+                        <i class="fas fa-calendar-plus"></i> Schedule Session
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Staff</th>
+                                    <th>Scheduled Time</th>
+                                    <th>Duration</th>
+                                    <th>Program Day</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in yoga_sessions %}
+                                <tr>
+                                    <td>{{ session.patient.get_full_name }}</td>
+                                    <td>{{ session.staff.get_full_name }}</td>
+                                    <td>{{ session.scheduled_time }}</td>
+                                    <td>{{ session.duration }} minutes</td>
+                                    <td>Day {{ session.program_day }}</td>
+                                    <td>
+                                        {% if session.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'cancel_yoga_session' session.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No scheduled yoga sessions found</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>

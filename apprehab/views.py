@@ -962,10 +962,15 @@ def yoga_list(request):
         messages.error(request, 'Access denied. Staff only.')
         return redirect('home')
     
+    # Get active yoga templates
     active_yogas = Yoga.objects.filter(is_active=True).select_related('patient', 'staff')
     
+    # Get active yoga sessions
+    yoga_sessions = YogaSession.objects.filter(is_active=True).select_related('patient', 'staff')
+    
     return render(request, 'yoga_list.html', {
-        'active_yogas': active_yogas
+        'active_yogas': active_yogas,
+        'yoga_sessions': yoga_sessions
     })
 
 @login_required

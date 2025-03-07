@@ -126,7 +126,7 @@
             <img src="{% static 'images/logo.png' %}" alt="Logo">
         </div>
         <nav class="nav-bar">
-            <ul class="nav-links">
+            <!-- <ul class="nav-links">
                 <li><a href="{% url 'home' %}">Home</a></li>
                 <li><a href="#">Services &#9662;</a></li>
                 <a href="{% url 'user_gallery' %}">Gallery</a> 
@@ -138,8 +138,8 @@
             </ul>
             <div class="search-bar">
                 <input type="text" placeholder="Search...">
-            </div>
-            <div class="user-icon">
+            </div> -->
+            <!-- <div class="user-icon">
                 <img src="{% static 'images/use.png' %}" alt="User Icon">
                 <div class="user-dropdown">
                     {% if user.is_authenticated %}
@@ -169,7 +169,7 @@
                         <i class="fas fa-sign-in-alt"></i> Login
                     </a>
                     {% endif %}
-                </div>
+                </div> -->
             </div>
         </nav>
     </header>
@@ -188,7 +188,56 @@
     {% endif %}
 
     <main>
-        
+        <div class="container mt-4">
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">Patient List</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Patient Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Addiction Type</th>
+                                            <th>Assigned Staff</th>
+                                            <th>Start Date</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for application in approved_applications %}
+                                        <tr>
+                                            <td>{{ application.name }}</td>
+                                            <td>{{ application.patient_email }}</td>
+                                            <td>{{ application.contact_number }}</td>
+                                            <td>{{ application.addiction_type }}</td>
+                                            <td>{% if application.assigned_staff %}{{ application.assigned_staff.name }}{% else %}Not assigned{% endif %}</td>
+                                            <td>{% if application.start_date %}{{ application.start_date }}{% else %}Not set{% endif %}</td>
+                                            <td>
+                                                <a href="{% url 'patient_progress' %}?patient_id={{ application.id }}" class="btn btn-info btn-sm">
+                                                    <i class="fas fa-chart-line"></i> Progress
+                                                </a>
+
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">No approved patients found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </main>
 
     <footer class="footer mt-auto py-3 bg-light">

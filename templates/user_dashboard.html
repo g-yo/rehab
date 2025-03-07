@@ -118,7 +118,6 @@
         text-align: center;
     }
     
-<style>
 .profile-image {
     width: 120px;
     height: 120px;
@@ -238,8 +237,7 @@
     </header>
 
     {% if messages %}
-    <div class="container mt-3">
-        {% for message in messages %}
+    <div class="container"style="padding-top: 100px;">        {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -252,7 +250,7 @@
 
     <main>
         
-<div class="container-fluid mt-4 px-4">
+<div class="container-fluid  px-4" style="padding-top: 100px;">
     <!-- Header Section -->
     <div class="row mb-4">
         <div class="col-md-10 mx-auto">
@@ -280,11 +278,11 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-3 text-md-end mt-3 mt-md-0">
+                        <!-- <div class="col-md-3 text-md-end mt-3 mt-md-0">
                             <a href="{% url 'user_profile' %}" class="btn btn-light">
                                 <i class="fas fa-user-edit me-2"></i> Edit Profile
                             </a>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
             </div>
