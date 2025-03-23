@@ -130,9 +130,8 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 # Additional directories foffr static files (DO NOT include STATIC_ROOT here)
 STATICFILES_DIRS = [
-    BASE_DIR / 'statics',
+    BASE_DIR / 'rehab_center/statics',
 ]
-
 
 # Media files
 MEDIA_URL = '/media/'
