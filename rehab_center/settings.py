@@ -130,8 +130,9 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Additional directories for static files (DO NOT include STATIC_ROOT here)
 STATICFILES_DIRS = [
-    BASE_DIR / 'statics',  # Your custom static folder
+    BASE_DIR / 'rehab_center' / 'statics',
 ]
+
 
 # Media files
 MEDIA_URL = '/media/'
