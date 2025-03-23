@@ -28,7 +28,7 @@ SECRET_KEY = os.getenv("SECRET_KEY", "default-secret-key")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
-ALLOWED_HOSTS = ['13.60.15.12', 'localhost', '127.0.0.1']  # Replace '*' with specific hosts for security
+ALLOWED_HOSTS = ['13.60.15.12', 'localhost', '127.0.0.1']  # Repldace '*' with specific hosts for security
 
 # Authentication backends for social auth and defaultf
 AUTHENTICATION_BACKENDS = [
