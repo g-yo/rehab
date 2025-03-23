@@ -30,7 +30,7 @@ DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = ['13.60.15.12', 'localhost', '127.0.0.1']  # Replace '*' with specific hosts for security
 
-# Authentication backends for social auth and default
+# Authentication backends for social auth and defaultf
 AUTHENTICATION_BACKENDS = [
     'social_core.backends.google.GoogleOAuth2',
     'django.contrib.auth.backends.ModelBackend',
