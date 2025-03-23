@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Approve Application{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Approve Application</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5>Application Details</h5>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Name:</strong> {{ application.name }}</p>
+                                <p><strong>Age:</strong> {{ application.age }}</p>
+                                <p><strong>Addiction Type:</strong> {{ application.get_addiction_type_display }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Contact:</strong> {{ application.contact_number }}</p>
+                                <p><strong>Email:</strong> {{ application.patient_email }}</p>
+                                <p><strong>Submission Date:</strong> {{ application.created_at|date:"F d, Y" }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="{% url 'review_application' application.id %}">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="start_date"><strong>Program Start Date:</strong></label>
+                            <input type="date" class="form-control" id="start_date" name="start_date" required>
+                            <small class="form-text text-muted">This will be set as Day 1 of the 7-day program.</small>
+                        </div>
+                        <div class="form-group mt-4">
+                            <button type="submit" name="action" value="approve" class="btn btn-success">Approve Application</button>
+                            <a href="{% url 'addiction_list' %}" class="btn btn-secondary ml-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // Set default date to today
+        var today = new Date().toISOString().split('T')[0];
+        $('#start_date').val(today);
+    });
+</script>
+{% endblock %}
+{% endblock %}

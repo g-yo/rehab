@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>All Applications</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #007bff;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+        .application {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section h2 {
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+        }
+        .section h3 {
+            color: #444;
+            margin-bottom: 10px;
+        }
+        .detail-row {
+            margin-bottom: 10px;
+        }
+        .detail-label {
+            font-weight: bold;
+            color: #555;
+        }
+        .footer {
+            text-align: center;
+            font-size: 12px;
+            color: #777;
+            margin-top: 30px;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .status-approved {
+            color: green;
+            font-weight: bold;
+        }
+        .status-rejected {
+            color: red;
+            font-weight: bold;
+        }
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Rehab Center</h1>
+        <p>All Treatment Applications</p>
+        <p>Generated on: {{ generated_date|date:"F d, Y" }}</p>
+    </div>
+    
+    {% for application in applications %}
+    <div class="application">
+        <div class="section">
+            <h2>Application #{{ forloop.counter }} - {{ application.name }}</h2>
+            
+            <div class="section">
+                <h3>Patient Information</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Name:</span> {{ application.name }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Age:</span> {{ application.age }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Email:</span> {{ application.patient_email }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Contact Number:</span> {{ application.contact_number }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Addiction Type:</span> {{ application.get_addiction_type_display }}
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Addiction Details</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Description:</span>
+                    <p>{{ application.description }}</p>
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Guider Information</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Guider Name:</span> {{ application.guider_name|default:"-" }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Guider Contact Number:</span> {{ application.guider_contact_number|default:"-" }}
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Relationship:</span> 
+                    {% if application.guider_relationship == 'other' %}
+                        Other - {{ application.other_relationship_specification }}
+                    {% else %}
+                        {{ application.get_guider_relationship_display|default:"-" }}
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="section">
+                <h3>Application Status</h3>
+                <div class="detail-row">
+                    <span class="detail-label">Status:</span> 
+                    <span class="status-{{ application.status }}">{{ application.get_status_display }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Submitted On:</span> {{ application.created_at|date:"F d, Y" }}
+                </div>
+                {% if application.assigned_staff %}
+                <div class="detail-row">
+                    <span class="detail-label">Assigned Staff:</span> {{ application.assigned_staff.name }}
+                </div>
+                {% endif %}
+                {% if application.start_date %}
+                <div class="detail-row">
+                    <span class="detail-label">Program Start Date:</span> {{ application.start_date|date:"F d, Y" }}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    
+    <div class="footer">
+        <p>Rehab Center - Confidential Document</p>
+    </div>
+</body>
+</html>

@@ -1,0 +1,237 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us - ReVive Rehab Center</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Contact Us Page Styles */
+        .contact-section {
+            margin-top:140px;
+            padding: 40px;
+            background-color: #f9f9f9;
+        }
+/* .contact-info{
+text-align: left !important;
+font-size: 20px !important;
+
+
+} */
+        .contact-section h1, .contact-section h2 {
+            color: #333;
+        }
+
+        .contact-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .contact-info h2 {
+            margin-top: 20px;
+            align-items: left;
+            text-align: left;
+            font-size: 20px !important;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info h2:hover {
+            color: #ffc107;
+        }
+
+        .contact-form {
+            margin-top: 30px;
+        }
+
+        .contact-form input[type="text"],
+        .contact-form input[type="email"],
+        .contact-form textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .contact-form button {
+            padding: 10px 20px;
+            background-color: #ffc107;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .contact-form button:hover {
+            background-color: #e0a806;
+        }
+
+        .contact-info a {
+            color: #ffc107;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .contact-info a:hover {
+            color: #e0a806;
+        }
+        .about-section {
+            margin-top:1px;
+
+            padding: 40px;
+            background-color: #f9f9f9;
+        }
+        .auth-container {
+            display: flex;
+margin-right:1500px;
+margin-left: 0;
+/* margin-top:550px; */
+            height: 250px;
+            width:100%;
+            background-color: #ffe100;
+            margin-top:0;
+            padding-top:0;     
+        z-index: -1;
+        }
+        .about-section h1, .about-section h2 {
+            color: #333;
+        }
+
+        .about-section p {
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .about-section h2 {
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+
+        .about-section h2:hover {
+            color: #ffc107;
+        }
+
+        .about-section ul {
+            list-style-type: disc;
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .about-section ul li {
+            margin-bottom: 10px;
+            transition: color 0.3s ease;
+        }
+
+        .about-section ul li:hover {
+            color: #ffc107;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a>
+                    <!-- <ul class="dropdown">
+                        <li><a href="#">Service 1</a></li>
+                        <li><a href="#">Service 2</a></li>
+                    </ul> -->
+                </li>
+                <a href="{% url 'user_gallery' %}">Gallery</a> 
+                                <li><a href="{% url 'about' %}">About Us</a></li>
+                <li><a href="contact">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/use.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="#">Dashboard</a>
+                    <a href="#">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                    <a href="{% url 'user_register' %}">Register</a>
+                    <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+      </header>
+    <div class="auth-container">
+        <h2 class="about-section" style="text-align: center;font-size: 20px;">CONTACT US</h2>
+    </div>
+    <main>
+        <section class="contact-section">
+            <h1 style="align-items: center;font-size: 28px;font-weight: bold;">CONTACT US</h1>
+            <p>If you have any questions, need assistance, or want to learn more about ReVive, feel free to reach out to us through any of the following channels:</p>
+
+            <div class="contact-info">
+                <h2>Address</h2>
+                <p>ReVive Kannur,Kerala,India,670571</p>
+
+                <h2>Phone</h2>
+                <p>+91 8301944113</p>
+
+                <h2>Email</h2>
+                <p>support@reviverehab.com</p>
+
+                <h2>Follow Us</h2>
+                <p>
+                    <a href="#">Facebook</a> |
+                    <a href="#">Twitter</a> |
+                    <a href="#">Instagram</a>
+                </p>
+            </div>
+
+            <div class="contact-form">
+                <h2>Send Us a Message</h2>
+                <form method="post" action="#">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" placeholder="Your Message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
+                <p>Welcome to Rehab. Find your relief.</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com" target="_blank"><img src="{% static 'images/fb.png' %}" alt="Facebook"></a>
+                <a href="https://www.instagram.com" target="_blank"><img src="{% static 'images/ig.png' %}" alt="Instagram"></a>
+                <a href="https://www.twitter.com" target="_blank"><img src="{% static 'images/x.png' %}" alt="Twitter"></a>
+            </div>
+            <div class="footer-menus">
+                <p>
+                    <a href="#">Home</a> / 
+                    <a href="#">Services</a> / 
+                    <a href="#">Gallery</a> / 
+                    <a href="#">About Us</a> / 
+                    <a href="#">Contact Us</a> / 
+                    <a href="#">Privacy Policy</a> / 
+                    <a href="#">Terms and Conditions</a>
+                </p>
+            </div>
+        </div>
+        <p>&copy; 2025 Rehab Center. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

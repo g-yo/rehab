@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Apply for Treatment</title>
+    <style>
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+        .other-specify {
+            display: none;
+        }
+    </style>
+    <script>
+        function showSpecifyField() {
+            var relationship = document.getElementById("id_guider_relationship");
+            var specifyField = document.getElementById("other-specify");
+            if (relationship.value === "other") {
+                specifyField.style.display = "block";
+            } else {
+                specifyField.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <h2>Apply for Treatment</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>

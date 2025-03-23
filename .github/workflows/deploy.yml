@@ -1,0 +1,37 @@
+name: Deploy to AWS EC2
+
+on:
+  push:
+    branches:
+      - main  # Run on push to the 'main' branch (you can change this to 'master' or any branch you're using)
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'  # Set the Python version for your app
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: SSH to AWS EC2 and deploy
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: ${{ secrets.AWS_HOST }}
+          username: ubuntu
+          key: ${{ secrets.AWS_SSH_KEY }}
+          script: |
+            cd /home/ubuntu/rehab  # Correct path to your project
+            git pull origin main  # Update the server with the latest code
+            source venv/bin/activate
+            python manage.py migrate  # Run migrations
+            python manage.py collectstatic --noinput  # Collect static files
+            sudo systemctl restart gunicorn  # Restart gunicorn to apply the changes

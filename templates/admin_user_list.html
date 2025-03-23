@@ -1,0 +1,42 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User List</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h2>User List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Username</th>
+                <th>Date of Join</th>
+                <th>Email</th>
+                <th>Age</th>
+                <th>Addiction Detail</th>
+                <th>Parent Phone Number</th>
+                <th>Profile Photo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.first_name }}</td>
+                <td>{{ user.last_name }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.date_joined }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.age }}</td>
+                <td>{{ user.addiction_detail }}</td>
+                <td>{{ user.parent_phone_number }}</td>
+                <td><img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile Photo" width="50"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

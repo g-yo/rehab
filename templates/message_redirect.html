@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 text-center">
+    <div class="spinner-border text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <h3 class="mt-3">Please wait...</h3>
+</div>
+
+<script>
+    $(document).ready(function() {
+        {% if messages %}
+            {% for message in messages %}
+                // Show message in modal
+                $('#messageModal .modal-title').text('{{ message.tags|title }}');
+                $('#messageModal .modal-body').html('<p>{{ message }}</p>');
+                
+                // Set up redirect after modal is closed
+                $('#messageModal').on('hidden.bs.modal', function (e) {
+                    window.location.href = "{{ redirect_url }}";
+                });
+                
+                // Show the modal
+                $('#messageModal').modal('show');
+            {% endfor %}
+        {% else %}
+            // If no messages, redirect immediately
+            window.location.href = "{{ redirect_url }}";
+        {% endif %}
+    });
+</script>
+{% endblock %}

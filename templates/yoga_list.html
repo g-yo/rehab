@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yoga Classes - Rehab Center</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+    .header {
+        background-color: #fff;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        padding: 10px 20px;
+    }
+
+    .logo-bar img {
+        height: 50px;
+    }
+
+    .nav-bar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-links li {
+        margin: 0 15px;
+    }
+
+    .nav-links a {
+        color: #333;
+        text-decoration: none;
+        font-weight: 500;
+    }
+
+    .search-bar input {
+        padding: 8px 15px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        width: 200px;
+    }
+
+    .user-icon {
+        position: relative;
+        cursor: pointer;
+    }
+
+    .user-icon img {
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+    }
+
+    .user-dropdown {
+        display: none;
+        position: absolute;
+        right: 0;
+        top: 100%;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        min-width: 200px;
+        z-index: 1000;
+    }
+
+    .user-icon:hover .user-dropdown {
+        display: block;
+    }
+
+    .user-info {
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+        display: flex;
+        align-items: center;
+    }
+
+    .user-info img {
+        width: 30px;
+        height: 30px;
+        margin-right: 10px;
+    }
+
+    .user-dropdown a {
+        display: flex;
+        align-items: center;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+    .user-dropdown a i {
+        margin-right: 10px;
+        width: 20px;
+    }
+
+    .user-dropdown a:hover {
+        background-color: #f8f9fa;
+    }
+
+    main {
+        min-height: calc(100vh - 180px);
+        padding: 20px 0;
+    }
+
+    .footer {
+        background-color: #f8f9fa;
+        padding: 20px 0;
+        text-align: center;
+    }
+    
+<style>
+.badge {
+    padding: 8px 12px;
+}
+.badge-success {
+    background-color: #28a745;
+}
+.badge-danger {
+    background-color: #dc3545;
+}
+</style>
+
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a></li>
+                <a href="{% url 'user_gallery' %}">Gallery</a> 
+                {% if user.is_authenticated and user.is_patient %}
+                <li><a href="{% url 'patient_activities' %}">Activities</a></li>
+                {% endif %}
+                <li><a href="{% url 'about' %}">About Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/use.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="{% url 'user_dashboard' %}">
+                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                    </a>
+                    {% if user.is_patient %}
+                    <a href="{% url 'patient_activities' %}">
+                        <i class="fas fa-tasks"></i> My Activities
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'user_profile' %}">
+                        <i class="fas fa-user"></i> Profile
+                    </a>
+                    <a href="{% url 'logout' %}">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                    {% else %}
+                    <a href="{% url 'user_register' %}">
+                        <i class="fas fa-user-plus"></i> Register
+                    </a>
+                    <a href="{% url 'user_login' %}">
+                        <i class="fas fa-sign-in-alt"></i> Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        
+<div class="container mt-4">
+    <!-- Yoga Templates Section -->
+    <!-- <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Active Yoga Templates</h4>
+                    <a href="{% url 'add_yoga' %}" class="btn btn-light">
+                        <i class="fas fa-plus"></i> Add New Yoga
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Yoga Name</th>
+                                    <th>Patient</th>
+                                    <th>Staff</th>
+                                    <th>Duration</th>
+                                    <th>Description</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for yoga in active_yogas %}
+                                <tr>
+                                    <td>{{ yoga.name }}</td>
+                                    <td>{% if yoga.patient %}{{ yoga.patient.get_full_name }}{% else %}Not assigned{% endif %}</td>
+                                    <td>{% if yoga.staff %}{{ yoga.staff.name }} ({{ yoga.staff.position }}){% else %}Not assigned{% endif %}</td>
+                                    <td>{{ yoga.duration }} seconds</td>
+                                    <td>{{ yoga.description|truncatechars:50 }}</td>
+                                    <td>
+                                        <form method="post" action="{% url 'cancel_yoga_session' yoga.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center">No active yoga templates found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+    </div>
+
+    <!-- Yoga Sessions Section -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0">Scheduled Yoga Sessions</h4>
+                    <a href="{% url 'schedule_yoga' %}" class="btn btn-light">
+                        <i class="fas fa-calendar-plus"></i> Schedule Session
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Patient</th>
+                                    <th>Staff</th>
+                                    <th>Scheduled Time</th>
+                                    <th>Duration</th>
+                                    <th>Program Day</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for session in yoga_sessions %}
+                                <tr>
+                                    <td>{{ session.patient.get_full_name }}</td>
+                                    <td>{{ session.staff.get_full_name }}</td>
+                                    <td>{{ session.scheduled_time }}</td>
+                                    <td>{{ session.duration }} minutes</td>
+                                    <td>Day {{ session.program_day }}</td>
+                                    <td>
+                                        {% if session.is_active %}
+                                        <span class="badge badge-success">Active</span>
+                                        {% else %}
+                                        <span class="badge badge-danger">Inactive</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <form method="post" action="{% url 'cancel_yoga_session' session.id %}" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="fas fa-times"></i> Cancel
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="7" class="text-center">No scheduled yoga sessions found</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+    </main>
+
+    <footer class="footer mt-auto py-3 bg-light">
+        <div class="container text-center">
+            <span class="text-muted">{% now "Y" %} Rehab Center. All rights reserved.</span>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    
+</body>
+</html>

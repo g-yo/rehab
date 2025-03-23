@@ -1,0 +1,18 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Image</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h2 class="gallery-form-title">Edit Image</h2>
+    <form method="post" enctype="multipart/form-data" class="gallery-form">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="gallery-form-button">Update</button>
+    </form>
+</body>
+</html>

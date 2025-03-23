@@ -1,0 +1,195 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>User Login</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Container Styles */
+        .auth-container {
+            display: flex;
+margin-right:1500px;
+margin-left:0;
+            height: 250px;
+            width:100%;
+            background-color: #ffe100;
+            margin-top:0;
+            padding-top:0;     
+        z-index: -1;
+        }
+
+        .login-form {
+            margin-left:25%;
+            align-items: center;
+            width: 50%;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
+        }
+
+        h2 {
+            color: #000;
+        }
+
+        /* Form Styles */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        form input[type="text"],
+        form input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            color: #000; /* Black text */
+        }
+
+        form button {
+            padding: 10px;
+            background-color: #FFC107;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+
+        form button:hover {
+            background-color: #e0a806;
+        }
+
+        .google-button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+            background-color: #db4437;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .google-button img {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+        }
+        .gallery-header {
+            background-color: #FFC107; /* Yellow background */
+            padding: 140px 20px 20px 20px; /* Added padding to the top */
+            opacity: 0;
+            transform: translateY(-50px);
+            transition: opacity 1s ease, transform 1s ease; /* Add transition for smooth effect */
+        }
+
+        .gallery-header h2 {
+            color: #fff; /* White text */
+            font-size: 2.5rem;
+            margin: 0;
+            z-index: 0;
+            text-transform: uppercase;
+        }
+
+        .gallery-header.show {
+            opacity: 1;
+            transform: translateY(0); /* Final position */
+        }
+
+    </style>
+</head>
+<body>
+    
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a>
+                    <!-- <ul class="dropdown">
+                        <li><a href="#">Service 1</a></li>
+                        <li><a href="#">Service 2</a></li>
+                    </ul> -->
+                </li>
+                <a href="{% url 'user_gallery' %}">Gallery</a> 
+                                <li><a href="about">About Us</a></li>
+                <li><a href="contact">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/use.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="#">Dashboard</a>
+                    <a href="#">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                    <a href="{% url 'user_register' %}">Register</a>
+                    <a href="{% url 'user_login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+      </header>
+      <div class="auth-container">
+        <h2 style="color:white">LOGIN</h2>
+    </div>
+
+        <div class="login-form">
+            <h2>Login</h2>
+            <form method="post" action="{% url 'user_login' %}">
+                {% csrf_token %}
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <button type="submit">Login</button>
+            </form>
+            <a href="{% url 'social:begin' 'google-oauth2' %}?next={{ request.path }}" class="google-button">
+                <img src="{% static 'images/google-white-icon.png' %}" alt="Google Logo">
+                Continue with Google
+            </a>
+        </div>
+    </div>
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <img src="{% static 'images/logo.png' %}" alt="Logo">
+                <p>Welcome to Rehab. Find your relief.</p>
+            </div>
+            <div class="footer-social">
+                <a href="https://www.facebook.com" target="_blank"><img src="{% static 'images/fb.png' %}" alt="Facebook"></a>
+                <a href="https://www.instagram.com" target="_blank"><img src="{% static 'images/ig.png' %}" alt="Instagram"></a>
+                <a href="https://www.twitter.com" target="_blank"><img src="{% static 'images/x.png' %}" alt="Twitter"></a>
+            </div>
+            <div class="footer-menus">
+                <p>
+                    <a href="#">Home</a> / 
+                    <a href="#">Services</a> / 
+                    <a href="#">Gallery</a> / 
+                    <a href="#">About Us</a> / 
+                    <a href="#">Contact Us</a> / 
+                    <a href="#">Privacy Policy</a> / 
+                    <a href="#">Terms and Conditions</a>
+                </p>
+            </div>
+        </div>
+        <p>&copy; 2025 Rehab Center. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

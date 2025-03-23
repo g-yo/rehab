@@ -1,0 +1,23 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h2 class="admin-dashboard-title" style="text-align: center;">Which one want to continue?🚀✨</h2>
+    <div class="admin-dashboard-options">
+        <a href="#" class="admin-dashboard-option-box">
+            <img src="{% static 'images/frontend.png' %}" alt="Front End">
+            <span>FRONT END</span>
+        </a>
+        <a href="{% url 'back_end' %}" class="admin-dashboard-option-box">
+            <img src="{% static 'images/backend.png' %}" alt="Back End">
+            <span>BACK END</span>
+        </a>
+    </div>
+</body>
+</html>

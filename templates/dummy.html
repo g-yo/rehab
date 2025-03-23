@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block title %}Dummy Page{% endblock %}
+
+{% block content %}
+<div class="container">
+    <section class="mt-4">
+        <h2>Welcome to Our Dummy Page</h2>
+        <p>This is a simple dummy HTML page created for demonstration purposes.</p>
+    </section>
+    
+    <section class="mt-5">
+        <h2>Our Services</h2>
+        <div class="row mt-3">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Addiction Treatment</h3>
+                        <p class="card-text">Comprehensive programs designed to help individuals overcome substance abuse and addiction.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Mental Health Support</h3>
+                        <p class="card-text">Professional counseling and therapy services for various mental health conditions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h3 class="card-title">Rehabilitation Programs</h3>
+                        <p class="card-text">Specialized programs for physical rehabilitation and recovery.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="mt-5 mb-5">
+        <h2>Contact Information</h2>
+        <div class="card">
+            <div class="card-body">
+                <p><i class="fas fa-envelope mr-2"></i> Email: info@rehabcenter.com</p>
+                <p><i class="fas fa-phone mr-2"></i> Phone: (123) 456-7890</p>
+                <p><i class="fas fa-map-marker-alt mr-2"></i> Address: 123 Recovery Lane, Wellness City</p>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Any additional JavaScript can go here
+    console.log('Dummy page loaded successfully');
+</script>
+{% endblock %} 

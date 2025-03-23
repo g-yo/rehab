@@ -1,0 +1,272 @@
+{% load static %}
+
+{% block content %}
+<div class="container mt-4" style="padding-top: 750px;">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body text-center">
+                    <div class="profile-image-container mb-3 position-relative">
+                        {% if user.profile_photo %}
+                            <img src="{{ user.profile_photo.url }}" alt="Profile Photo" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% else %}
+                            <img src="{% static 'images/use.png' %}" alt="Default Profile" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        {% endif %}
+                        <div class="edit-photo-overlay position-absolute" style="top: 0; right: 0; margin: 10px;">
+                            <label for="profile_photo" class="btn btn-sm btn-light rounded-circle" style="width: 32px; height: 32px; padding: 0; line-height: 32px;">
+                                <i class="fas fa-camera"></i>
+                            </label>
+                        </div>
+                    </div>
+                    <h4 class="card-title mb-1">{{ user.first_name }} {{ user.last_name }}</h4>
+                    <p class="text-muted mb-3">{{ user.email }}</p>
+                    <form method="POST" enctype="multipart/form-data" id="profile-photo-form" class="d-none">
+                        {% csrf_token %}
+                        <input type="file" class="custom-file-input" id="profile_photo" name="profile_photo" accept="image/*" onchange="this.form.submit()">
+                    </form>
+                    
+                    <!-- Current Details Summary -->
+                    <div class="text-left border-top pt-3 mt-3">
+                        <h6 class="text-primary mb-3">Current Details</h6>
+                        <div class="mb-2">
+                            <small class="text-muted d-block">Phone Number</small>
+                            <span>{{ user.phone_number|default:"Not set" }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted d-block">Date of Birth</small>
+                            <span>{{ user.date_of_birth|date:"F d, Y"|default:"Not set" }}</span>
+                        </div>
+                        <div class="mb-2">
+                            <small class="text-muted d-block">Gender</small>
+                            <span>{{ user.get_gender_display|default:"Not set" }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Edit Profile</h5>
+                    <small class="text-white-50">* Click on fields to edit</small>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="profile-form">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="first_name">First Name</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="first_name" name="first_name" 
+                                               value="{{ user.first_name }}" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="last_name">Last Name</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="last_name" name="last_name" 
+                                               value="{{ user.last_name }}" required>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <div class="input-group">
+                                <input type="email" class="form-control" id="email" name="email" 
+                                       value="{{ user.email }}" required>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Current: {{ user.email }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <div class="input-group">
+                                <input type="tel" class="form-control" id="phone" name="phone" 
+                                       value="{{ user.phone_number }}" pattern="[0-9]{10}" 
+                                       title="Please enter a valid 10-digit phone number">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Current: {{ user.phone_number|default:"Not set" }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <div class="input-group">
+                                <textarea class="form-control" id="address" name="address" rows="3">{{ user.address }}</textarea>
+                                <div class="input-group-append">
+                                    <span class="input-group-text h-100"><i class="fas fa-edit"></i></span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Current: {{ user.address|default:"Not set" }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date_of_birth">Date of Birth</label>
+                            <div class="input-group">
+                                <input type="date" class="form-control" id="date_of_birth" name="date_of_birth" 
+                                       value="{{ user.date_of_birth|date:'Y-m-d' }}">
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Current: {{ user.date_of_birth|date:"F d, Y"|default:"Not set" }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <div class="input-group">
+                                <select class="form-control" id="gender" name="gender">
+                                    <option value="">Select Gender</option>
+                                    <option value="M" {% if user.gender == 'M' %}selected{% endif %}>Male</option>
+                                    <option value="F" {% if user.gender == 'F' %}selected{% endif %}>Female</option>
+                                    <option value="O" {% if user.gender == 'O' %}selected{% endif %}>Other</option>
+                                </select>
+                                <div class="input-group-append">
+                                    <span class="input-group-text"><i class="fas fa-edit"></i></span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Current: {{ user.get_gender_display|default:"Not set" }}</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio">Bio</label>
+                            <div class="input-group">
+                                <textarea class="form-control" id="bio" name="bio" rows="3">{{ user.bio }}</textarea>
+                                <div class="input-group-append">
+                                    <span class="input-group-text h-100"><i class="fas fa-edit"></i></span>
+                                </div>
+                            </div>
+                            <small class="text-muted">Current: {{ user.bio|default:"Not set" }}</small>
+                        </div>
+
+                        <button type="submit" name="update_profile" class="btn btn-primary">
+                            <i class="fas fa-save mr-1"></i> Save Changes
+                        </button>
+                    </form>
+
+                    <hr>
+
+                    <div class="mt-4">
+                        <h5 class="d-flex align-items-center">
+                            <i class="fas fa-key mr-2"></i> Change Password
+                        </h5>
+                        <form method="POST" id="password-form">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="current_password">Current Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="current_password" name="current_password" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password">New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="new_password" name="new_password" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                                    <div class="input-group-append">
+                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                            <i class="fas fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" name="change_password" class="btn btn-warning">
+                                <i class="fas fa-key mr-1"></i> Change Password
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Profile photo change handler
+    document.querySelector('.edit-photo-overlay').addEventListener('click', function() {
+        document.getElementById('profile_photo').click();
+    });
+
+    // Password visibility toggle
+    document.querySelectorAll('.toggle-password').forEach(function(button) {
+        button.addEventListener('click', function() {
+            const input = this.parentElement.parentElement.querySelector('input');
+            const icon = this.querySelector('i');
+            
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+    });
+
+    // Password validation
+    document.getElementById('password-form').addEventListener('submit', function(e) {
+        var newPass = document.getElementById('new_password').value;
+        var confirmPass = document.getElementById('confirm_password').value;
+        
+        if (newPass !== confirmPass) {
+            e.preventDefault();
+            alert('New passwords do not match!');
+        }
+    });
+
+    // Phone number validation
+    document.getElementById('phone').addEventListener('input', function(e) {
+        var phone = e.target.value.replace(/\D/g, ''); // Remove non-digits
+        if (phone.length > 10) {
+            phone = phone.slice(0, 10); // Keep only first 10 digits
+        }
+        e.target.value = phone;
+    });
+
+    // Highlight fields on focus
+    document.querySelectorAll('.form-control').forEach(function(input) {
+        input.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 0 0.2rem rgba(0,123,255,.25)';
+        });
+        input.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

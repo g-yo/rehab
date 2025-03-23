@@ -1,0 +1,93 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Contact Us - ReVive Rehab Center</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'images/logo.png' %}" alt="Logo">
+        </div>
+        <nav class="nav-bar">
+            <ul class="nav-links">
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="#">Services &#9662;</a>
+                    <ul class="dropdown">
+                        <li><a href="#">Service 1</a></li>
+                        <li><a href="#">Service 2</a></li>
+                    </ul>
+                </li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'about' %}">About Us</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+            </ul>
+            <div class="search-bar">
+                <input type="text" placeholder="Search...">
+            </div>
+            <div class="user-icon">
+                <img src="{% static 'images/user-icon.png' %}" alt="User Icon">
+                <div class="user-dropdown">
+                    {% if user.is_authenticated %}
+                    <div class="user-info">
+                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/default-profile.png' %}{% endif %}" alt="Profile Photo">
+                        <span>{{ user.username }}</span>
+                    </div>
+                    <a href="{% url 'dashboard' %}">Dashboard</a>
+                    <a href="{% url 'profile' %}">Profile</a>
+                    <a href="{% url 'logout' %}">Logout</a>
+                    {% else %}
+                    <a href="{% url 'register' %}">Register</a>
+                    <a href="{% url 'login' %}">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="auth-container">
+        <h2 class="about-section" style="text-align: center;font-size: 20px;">CONTACT US</h2>
+    </div>
+    <main>
+        <section class="contact-section">
+            <h1 style="align-items: center;font-size: 20px;">Contact Us</h1>
+            <p>If you have any questions, need assistance, or want to learn more about ReVive, feel free to reach out to us through any of the following channels:</p>
+            
+            <div class="contact-info">
+                <h2>Address</h2>
+                <p>123 Rehab Lane, Healing City, Kerala, India</p>
+                
+                <h2>Phone</h2>
+                <p>+91 9876543210</p>
+                
+                <h2>Email</h2>
+                <p>support@reviverehab.com</p>
+                
+                <h2>Follow Us</h2>
+                <p>
+                    <a href="#">Facebook</a> |
+                    <a href="#">Twitter</a> |
+                    <a href="#">Instagram</a>
+                </p>
+            </div>
+            
+            <div class="contact-form">
+                <h2>Send Us a Message</h2>
+                <form method="post" action="{% url 'send_message' %}">
+                    {% csrf_token %}
+                    <input type="text" name="name" placeholder="Your Name" required>
+                    <input type="email" name="email" placeholder="Your Email" required>
+                    <textarea name="message" placeholder="Your Message" required></textarea>
+                    <button type="submit">Send Message</button>
+                </form>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="footer">
+        <p>&copy; 2025 ReVive Rehab Center. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

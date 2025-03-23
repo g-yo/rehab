@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Your Video Conferences</h2>
+    
+    <div class="row">
+        {% for conference in conferences %}
+        <div class="col-md-6 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">{{ conference.title }}</h5>
+                    <p class="card-text">
+                        <strong>Scheduled Time:</strong> {{ conference.scheduled_time|date:"F j, Y, g:i a" }}<br>
+                        <strong>Staff Members:</strong><br>
+                        <ul class="list-unstyled ms-3">
+                            {% for staff in conference.staff.all %}
+                            <li>{{ staff.name }} ({{ staff.position }})</li>
+                            {% endfor %}
+                        </ul>
+                    </p>
+                    <a href="{{ conference.meeting_link }}" target="_blank" class="btn btn-success">Join Meeting</a>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12">
+            <div class="alert alert-info">
+                You don't have any scheduled video conferences.
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

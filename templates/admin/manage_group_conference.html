@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Group Conference{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8 mx-auto">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Group Conference Settings</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="title">Conference Title</label>
+                            <input type="text" class="form-control" id="title" name="title" 
+                                value="{{ group_conference.title|default:'Daily Group Meeting' }}" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group col-md-6">
+                                <label for="scheduled_time">Daily Time</label>
+                                <input type="time" class="form-control" id="scheduled_time" name="scheduled_time" 
+                                    value="{{ group_conference.scheduled_time|default:'17:00' }}" required>
+                            </div>
+                            <div class="form-group col-md-6">
+                                <label for="duration">Duration (minutes)</label>
+                                <input type="number" class="form-control" id="duration" name="duration" 
+                                    value="{{ group_conference.duration|default:60 }}" required>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Settings</button>
+                    </form>
+
+                    {% if group_conference %}
+                    <div class="mt-4">
+                        <h5>Today's Meeting Link</h5>
+                        <div class="input-group">
+                            <input type="text" class="form-control" value="{{ group_conference.meeting_link }}" readonly>
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" onclick="copyLink()">Copy</button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function copyLink() {
+    const linkInput = document.querySelector('input[readonly]');
+    linkInput.select();
+    document.execCommand('copy');
+    alert('Meeting link copied to clipboard!');
+}
+</script>
+{% endblock %} 
