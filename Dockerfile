@@ -13,5 +13,5 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Expose the Django port
 EXPOSE 8000
 
-# Start Gunicorn server
+# Start Gunicorn serverdfa
 CMD ["gunicorn", "--bind", "0.0.0.0:8000", "rehab_center.wsgi:application"]
