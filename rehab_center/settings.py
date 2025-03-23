@@ -126,7 +126,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Directory where `collectstatic` will gather all static files
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = '/home/ec2-user/staticfiles/'
 
 # Additional directories foffr static files (DO NOT include STATIC_ROOT here)
 STATICFILES_DIRS = [
