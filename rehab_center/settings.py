@@ -130,7 +130,7 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 
 # Additional directories for static files (DO NOT include STATIC_ROOT here)
 STATICFILES_DIRS = [
-    BASE_DIR / 'rehab_center' / 'statics',
+    BASE_DIR / 'rehab' / 'rehab_center' / 'statics',
 ]
 
 
