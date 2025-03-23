@@ -124,9 +124,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/static/'
+
+# Directory where `collectstatic` will gather all static files
+STATIC_ROOT = BASE_DIR / 'staticfiles'  
+
+# Additional directories for static files (DO NOT include STATIC_ROOT here)
 STATICFILES_DIRS = [
-    BASE_DIR / 'statics',  # Custom static files directory (e.g., ~/rehab/statics/)
+    BASE_DIR / 'statics',  # Your custom static folder
 ]
 
 # Media files
