@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    image: geoaugustine/rehab
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - DEBUG=0
