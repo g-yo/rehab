@@ -10,8 +10,11 @@ COPY . .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose the Django port
-EXPOSE 8000
+# Collect static files
+RUN python manage.py collectstatic --noinput
 
-# Start Gunicorn server
-CMD ["gunicorn", "--bind", "0.0.0.0:8000", "rehab_center.wsgi:application"]
+# Expose port 80 instead of 8000
+EXPOSE 80
+
+# Start Gunicorn server on port 80
+CMD ["gunicorn", "--bind", "0.0.0.0:80", "rehab_center.wsgi:application"]
