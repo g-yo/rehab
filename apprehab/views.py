@@ -7,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
+from django.utils.datastructures import MultiValueDictKeyError
 from datetime import datetime, timedelta, date
 import json
 import random
@@ -21,6 +22,8 @@ from .email_utils import (
     send_registration_email, send_application_submitted_email,
     send_application_status_update_email, send_staff_account_email
 )
+from django.core.mail import send_mail
+from django.conf import settings
 
 from .models import (
     GalleryImage, CustomUser, AddictionDetails, Staff, 
@@ -28,7 +31,7 @@ from .models import (
 )
 from .forms import (
     AssignPatientForm, GalleryImageForm, AddictionDetailsForm, 
-    StaffForm, VideoConferenceForm, YogaForm, YogaSessionForm
+    StaffForm, VideoConferenceForm, YogaForm, YogaSessionForm, ContactForm
 )
 
 def home(request):
@@ -66,7 +69,7 @@ def admin_login(request):
         if user is not None:
             if user.is_superuser:
                 login(request, user)
-                return redirect('admin_dashboard')  # Redirect to admin dashboard
+                return redirect('back_end')  # Redirect to backend page instead of admin dashboard
             else:
                 messages.error(request, 'You are not authorized to access the admin area.')
         else:
@@ -88,9 +91,23 @@ def back_end(request):
         messages.error(request, 'Access denied. Staff only.')
         return redirect('home')
     
-    applications = AddictionDetails.objects.filter(status='pending')
+    # Get statistics for dashboard
+    total_users = CustomUser.objects.count()
+    total_applications = AddictionDetails.objects.count()
+    total_staff = Staff.objects.count()
+    upcoming_conferences = VideoConference.objects.filter(
+        scheduled_time__gte=timezone.now()
+    ).count()
+    
+    # Get pending applications for notification badge
+    pending_applications = AddictionDetails.objects.filter(status='pending').count()
+    
     return render(request, 'admin/back_end.html', {
-        'applications': applications
+        'total_users': total_users,
+        'total_applications': total_applications,
+        'total_staff': total_staff,
+        'upcoming_conferences': upcoming_conferences,
+        'pending_applications': pending_applications
     })
 
 @login_required
@@ -323,14 +340,37 @@ def about(request):
     return render(request, 'about.html')
 
 def contact(request):
-    return render(request, 'contact.html')
+    if request.method == 'POST':
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            
+            # Send email
+            subject = f"Contact Form Message from {name}"
+            email_message = f"Name: {name}\nEmail: {email}\n\nMessage:\n{message}"
+            from_email = settings.DEFAULT_FROM_EMAIL
+            recipient_list = ['geoaugustion@gmail.com']
+            
+            try:
+                send_mail(subject, email_message, from_email, recipient_list)
+                messages.success(request, "Your message has been sent successfully. We'll get back to you soon!")
+                return redirect('contact')
+            except Exception as e:
+                messages.error(request, "An error occurred while sending your message. Please try again later.")
+    else:
+        form = ContactForm()
+    
+    return render(request, 'contact.html', {'form': form})
 
 def apply_treatment(request):
     if request.method == 'POST':
         form = AddictionDetailsForm(request.POST, request.FILES)
         if form.is_valid():
             form.save()
-            return redirect('success_page')
+            messages.success(request, "Your application has been submitted successfully. We will contact you soon.")
+            return redirect('home')
     else:
         form = AddictionDetailsForm()
     return render(request, 'apply_treatment.html', {'form': form})
@@ -353,28 +393,48 @@ def add_staff(request):
     if request.method == 'POST':
         form = StaffForm(request.POST, request.FILES)
         if form.is_valid():
-            staff = form.save(commit=False)
             # Get email from form
             email = form.cleaned_data.get('email')
-            staff.email = email
+            name = form.cleaned_data.get('name')
+            
+            # Check if email already exists for a user
+            if CustomUser.objects.filter(email=email).exists():
+                messages.error(request, f'A user with email {email} already exists.')
+                return render(request, 'add_staff.html', {'form': form})
             
             # Generate username and password
-            staff.username = generate_username(staff.name)
-            password = generate_password()
-            staff.password = password
+            username = generate_username(name)
+            plain_password = generate_password()
+            
+            # Create staff model instance
+            staff = form.save(commit=False)
+            staff.email = email
+            staff.username = username
+            # Store plain text password for display in staff list
+            staff.password = plain_password
             staff.save()
+            
+            # Create a CustomUser for the staff
+            user = CustomUser.objects.create_user(
+                username=username,
+                email=email,
+                password=plain_password,  # Django will hash this automatically
+                first_name=name.split()[0] if ' ' in name else name,
+                last_name=name.split()[-1] if ' ' in name else '',
+            )
+            user.is_staff = True
+            user.save()
             
             # Send email with credentials
             try:
-                from .email_utils import send_staff_account_email
-                send_staff_account_email(staff, password)
+                send_staff_account_email(staff, plain_password)
                 messages.success(request, f'Staff member added successfully. Login credentials have been sent to {email}.')
             except Exception as e:
                 print(f"Error sending staff credentials email: {e}")
                 messages.success(request, 'Staff member added successfully, but there was an error sending the email with credentials.')
             
-            # Return to message redirect page
-            return render(request, 'message_redirect.html', {'redirect_url': reverse('staff_list')})
+            # Redirect directly to staff list without showing the loading screen
+            return redirect('staff_list')
     else:
         form = StaffForm()
     
@@ -387,8 +447,18 @@ def delete_staff(request, staff_id):
     
     staff = get_object_or_404(Staff, id=staff_id)
     if request.method == 'POST':
+        # Delete the associated CustomUser account if it exists
+        try:
+            user = CustomUser.objects.get(email=staff.email)
+            user.delete()
+        except CustomUser.DoesNotExist:
+            pass  # No associated user found, continue with staff deletion
+            
+        # Delete the staff record
+        staff_name = staff.name
         staff.delete()
-        messages.success(request, f'Staff member {staff.name} has been deleted.')
+        
+        messages.success(request, f'Staff member {staff_name} has been deleted.')
     return redirect('staff_list')
 
 def staff_list(request):
@@ -412,27 +482,49 @@ def staff_list(request):
 def assign_staff(request, application_id):
     if not request.user.is_staff:
         messages.error(request, 'Access denied. Staff only.')
-        return render(request, 'message_redirect.html', {'redirect_url': reverse('home')})
+        return redirect('home')
     
     application = get_object_or_404(AddictionDetails, id=application_id)
     staff_members = Staff.objects.all()
     
     if request.method == 'POST':
         staff_id = request.POST.get('staff_id')
+        
+        # Check if this is an AJAX request
+        is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+        
         if staff_id:
             try:
                 staff = Staff.objects.get(id=staff_id)
                 application.assigned_staff = staff
                 application.save()
                 messages.success(request, f'Successfully assigned {staff.name} to this application.')
-                return render(request, 'message_redirect.html', {'redirect_url': reverse('addiction_list')})
+                
+                if is_ajax:
+                    return JsonResponse({
+                        'status': 'success',
+                        'message': f'Successfully assigned {staff.name} to this application.'
+                    })
+                return redirect('addiction_list')
+                
             except Staff.DoesNotExist:
                 messages.error(request, 'Selected staff member not found.')
+                if is_ajax:
+                    return JsonResponse({
+                        'status': 'error',
+                        'message': 'Selected staff member not found.'
+                    })
         else:
             application.assigned_staff = None
             application.save()
             messages.success(request, 'Staff assignment removed.')
-            return render(request, 'message_redirect.html', {'redirect_url': reverse('addiction_list')})
+            
+            if is_ajax:
+                return JsonResponse({
+                    'status': 'success',
+                    'message': 'Staff assignment removed.'
+                })
+            return redirect('addiction_list')
     
     context = {
         'application': application,
@@ -587,7 +679,7 @@ def schedule_conference(request):
             conference = VideoConference.objects.create(
                 title=title,
                 patient_id=patient_id,
-                staff_id=staff_id,
+                staff_id=staff_id,  # This will be stored as is, which is the Staff model ID
                 scheduled_time=scheduled_time,
                 duration=duration,
                 notes=description,
@@ -603,9 +695,13 @@ def schedule_conference(request):
     approved_applications = AddictionDetails.objects.filter(
         status='approved'
     ).select_related('patient', 'assigned_staff').order_by('-created_at')
+    
+    # Get all staff members for staff selection
+    staffs = Staff.objects.all().order_by('name')
 
-    return render(request, 'schedule_conference.html', {
-        'approved_applications': approved_applications
+    return render(request, 'admin/schedule_conference.html', {
+        'approved_applications': approved_applications,
+        'staffs': staffs
     })
 
 @login_required
@@ -878,15 +974,24 @@ def staff_login(request):
         username = request.POST.get('username')
         password = request.POST.get('password')
         
-        try:
-            staff = Staff.objects.get(username=username, password=password)
-            # Store staff info in session
-            request.session['staff_id'] = staff.id
-            request.session['staff_name'] = staff.name
-            request.session['is_staff'] = True
-            return redirect('staff_dashboard')
-        except Staff.DoesNotExist:
-            messages.error(request, 'Invalid credentials')
+        # Use Django's authentication system
+        user = authenticate(request, username=username, password=password)
+        
+        if user is not None and user.is_staff:
+            login(request, user)
+            # Store additional staff info in session if needed
+            try:
+                staff = Staff.objects.get(email=user.email)
+                request.session['staff_id'] = staff.id
+                request.session['staff_name'] = staff.name
+                request.session['is_staff'] = True
+                return redirect('staff_dashboard')
+            except Staff.DoesNotExist:
+                messages.error(request, 'Staff profile not found.')
+                logout(request)
+                return redirect('staff_login')
+        else:
+            messages.error(request, 'Invalid credentials or not authorized as staff.')
             return redirect('staff_login')
     
     return render(request, 'staff_login.html')
@@ -937,18 +1042,47 @@ def staff_dashboard(request):
                         'unread_count': unread_count
                     })
         
-        # Get upcoming video conferences for this staff member's name
-        # Since VideoConference uses CustomUser, we need to find the corresponding CustomUser
+        # Get upcoming video conferences for this staff member
+        # First try to find by CustomUser if there's a matching account
         now = timezone.now()
+        upcoming_conferences = VideoConference.objects.none()
+        
         try:
+            # Try to find by matching CustomUser
             custom_user = CustomUser.objects.get(first_name__icontains=staff.name.split()[0],
-                                               last_name__icontains=staff.name.split()[-1])
+                                              last_name__icontains=staff.name.split()[-1])
             upcoming_conferences = VideoConference.objects.filter(
                 staff=custom_user,
                 scheduled_time__gte=now
             ).order_by('scheduled_time')
         except CustomUser.DoesNotExist:
+            # If no CustomUser found, try to find conferences where staff_id is stored as string
             upcoming_conferences = VideoConference.objects.none()
+        
+        # Also get conferences where staff_id is the ID of the Staff model
+        # This requires converting the staff_id to the correct type
+        staff_conferences = VideoConference.objects.filter(
+            staff_id=staff_id,
+            scheduled_time__gte=now
+        ).order_by('scheduled_time')
+        
+        # Combine both querysets
+        if staff_conferences.exists():
+            if upcoming_conferences.exists():
+                # Convert to list and combine
+                upcoming_list = list(upcoming_conferences)
+                staff_list = list(staff_conferences)
+                combined_list = upcoming_list + staff_list
+                # Remove duplicates by ID
+                seen_ids = set()
+                unique_conferences = []
+                for conf in combined_list:
+                    if conf.id not in seen_ids:
+                        seen_ids.add(conf.id)
+                        unique_conferences.append(conf)
+                upcoming_conferences = unique_conferences
+            else:
+                upcoming_conferences = staff_conferences
         
         # Get group conferences
         group_conferences = GroupConference.objects.filter(
@@ -972,14 +1106,31 @@ def staff_dashboard(request):
 
 def user_login(request):
     if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return redirect('home')
-        else:
-            messages.error(request, 'Invalid username or password')
+        try:
+            email = request.POST['email']
+        except MultiValueDictKeyError:
+            # Fall back to username if email is not in the POST data
+            try:
+                email = request.POST['username']
+            except MultiValueDictKeyError:
+                messages.error(request, 'Email field is required')
+                return render(request, 'login.html')
+                
+        password = request.POST.get('password', '')
+        
+        # Get the user by email
+        User = get_user_model()
+        try:
+            user_obj = User.objects.get(email=email)
+            # Authenticate with username and password
+            user = authenticate(request, username=user_obj.username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('home')
+            else:
+                messages.error(request, 'Invalid email or password')
+        except User.DoesNotExist:
+            messages.error(request, 'No account found with this email')
 
     return render(request, 'login.html')
 
@@ -990,16 +1141,32 @@ def register(request):
         email = request.POST.get('email')
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
+        first_name = request.POST.get('first_name')
+        last_name = request.POST.get('last_name')
+        age = request.POST.get('age')
+        addiction_detail = request.POST.get('addiction_detail')
+        parent_phone_number = request.POST.get('parent_phone_number')
+        profile_photo = request.FILES.get('profile_photo')
         
         if password1 == password2:
             try:
                 # Check if email already exists
-                if User.objects.filter(email=email).exists():
+                if CustomUser.objects.filter(email=email).exists():
                     messages.error(request, 'Email already exists.')
                     return render(request, 'register.html')
                 
                 # Create the user
-                user = User.objects.create_user(username=username, email=email, password=password1)
+                user = CustomUser.objects.create_user(
+                    username=username, 
+                    email=email, 
+                    password=password1,
+                    first_name=first_name,
+                    last_name=last_name,
+                    age=age,
+                    addiction_detail=addiction_detail,
+                    parent_phone_number=parent_phone_number,
+                    profile_photo=profile_photo
+                )
                 user.is_patient = True
                 user.save()
                 
@@ -1014,21 +1181,16 @@ def register(request):
                 login_user = authenticate(request, username=username, password=password1)
                 if login_user:
                     login(request, login_user)
-                    messages.success(request, 'Registration successful. A confirmation email has been sent to your email address.')
-                    # Set session variable for redirect after message
-                    request.session['message_redirect'] = reverse('home')
-                    return render(request, 'message_redirect.html', {'redirect_url': reverse('home')})
+                    return redirect('home')
                 else:
                     # If auto-login fails, redirect to login page
-                    messages.success(request, 'Registration successful. Please log in with your credentials.')
-                    # Set session variable for redirect after message
-                    request.session['message_redirect'] = reverse('user_login')
-                    return render(request, 'message_redirect.html', {'redirect_url': reverse('user_login')})
+                    return redirect('user_login')
             except Exception as e:
                 messages.error(request, f'Error during registration: {str(e)}')
                 return render(request, 'register.html')
         else:
             messages.error(request, 'Passwords do not match')
+            return render(request, 'register.html')
 
     return render(request, 'register.html')
 
@@ -1058,10 +1220,10 @@ def add_yoga(request):
             )
             
             messages.success(request, 'Yoga session scheduled successfully.')
-            return render(request, 'message_redirect.html', {'redirect_url': reverse('yoga_list')})
+            return redirect('yoga_list')
         except Exception as e:
             messages.error(request, f'Error scheduling yoga session: {str(e)}')
-            return render(request, 'message_redirect.html', {'redirect_url': reverse('add_yoga')})
+            return redirect('add_yoga')
     
     # Get staff and approved applications for the form
     staffs = Staff.objects.all().order_by('name')
@@ -1114,9 +1276,9 @@ def cancel_yoga_session(request, session_id):
         messages.error(request, 'Access denied. Staff only.')
         return redirect('home')
     
-    yoga = get_object_or_404(Yoga, id=session_id)
-    yoga.is_active = False
-    yoga.save()
+    yoga_session = get_object_or_404(YogaSession, id=session_id)
+    yoga_session.is_active = False
+    yoga_session.save()
     messages.success(request, 'Yoga session cancelled successfully.')
     return redirect('yoga_list')
 
@@ -1131,12 +1293,37 @@ def patient_yoga(request):
         patient=request.user,
         is_active=True
     ).select_related('staff')
-
+    
+    # Get session ID from query parameter if available
+    session_id = request.GET.get('session', None)
+    current_session = None
+    
+    if session_id:
+        try:
+            current_session = yoga_sessions.get(id=session_id)
+        except (YogaSession.DoesNotExist, ValueError):
+            messages.warning(request, 'Requested yoga session not found. Showing default session.')
+    
+    # Use the first available session if no specific session was requested or found
+    if not current_session and yoga_sessions.exists():
+        current_session = yoga_sessions.first()
+    
     # Example YouTube video URL (you can change this later)
-    youtube_url = "https://www.youtube.com/embed/v7AYKMP6rOE"  # Sample yoga video
+    youtube_url = "https://www.youtube.com/embed/brjAjq4zEIE"  # Sample yoga video
+    
+    # If we have a current session, we can use its specific details
+    session_data = {}
+    if current_session:
+        session_data = {
+            'id': current_session.id,
+            'staff_name': current_session.staff.get_full_name() if current_session.staff else 'Not Assigned',
+            'scheduled_time': current_session.scheduled_time.strftime('%Y-%m-%d %H:%M') if current_session.scheduled_time else 'Not Scheduled'
+        }
     
     return render(request, 'patient_yoga.html', {
         'yoga_sessions': yoga_sessions,
+        'current_session': current_session,
+        'session_data': json.dumps(session_data),
         'youtube_url': youtube_url
     })
 
@@ -1451,7 +1638,7 @@ def submit_addiction(request):
                 print(f"Error sending application submission email: {e}")
                 
             messages.success(request, 'Your application has been submitted successfully. A confirmation email has been sent to your email address.')
-            return render(request, 'message_redirect.html', {'redirect_url': reverse('user_dashboard')})
+            return redirect('user_dashboard')
     else:
         form = AddictionDetailsForm()
     

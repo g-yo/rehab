@@ -1,39 +1,306 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apply for Treatment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <style>
-        label {
-            display: block;
-            margin-top: 10px;
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        input, textarea, select {
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
+        
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 15px;
         }
-        .other-specify {
-            display: none;
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            overflow: hidden;
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            color: white;
+            padding: 1.25rem;
+            border-bottom: none;
+        }
+        
+        .card-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            background-color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            font-weight: 600;
+            color: #5a5c69;
+            margin-bottom: 0.5rem;
+        }
+        
+        .form-control {
+            border-radius: 8px;
+            padding: 0.75rem;
+            border: 1px solid #d1d3e2;
+            font-size: 0.9rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        
+        .form-control:focus {
+            border-color: #4e73df;
+            box-shadow: 0 0 0 0.25rem rgba(78, 115, 223, 0.25);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #224abe 0%, #1a3a8f 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
+        }
+        
+        .alert {
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border: none;
+        }
+        
+        .alert-info {
+            background-color: #e1f5fe;
+            color: #0277bd;
+            border-left: 4px solid #0277bd;
+        }
+        
+        .errorlist {
+            color: #d32f2f;
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+        
+        .age-notice {
+            background-color: #e8f5e9;
+            border-left: 4px solid #43a047;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            border-radius: 8px;
         }
     </style>
-    <script>
-        function showSpecifyField() {
-            var relationship = document.getElementById("id_guider_relationship");
-            var specifyField = document.getElementById("other-specify");
-            if (relationship.value === "other") {
-                specifyField.style.display = "block";
-            } else {
-                specifyField.style.display = "none";
-            }
-        }
-    </script>
 </head>
 <body>
-    <h2>Apply for Treatment</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Submit</button>
-    </form>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2><i class="fas fa-clipboard-list me-2"></i> Apply for Treatment</h2>
+            </div>
+            
+            <div class="card-body">
+                <div class="age-notice">
+                    <h5><i class="fas fa-info-circle me-2"></i> Age Requirement</h5>
+                    <p class="mb-0">Our rehabilitation services are specifically designed for individuals between the ages of 14 and 22. If you're outside this age range, please contact us directly for alternative resources.</p>
+                </div>
+                
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="{{ form.name.id_for_label }}" class="form-label">Full Name</label>
+                        {{ form.name }}
+                        {% if form.name.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.name.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.age.id_for_label }}" class="form-label">Age (14-22 years)</label>
+                        {{ form.age }}
+                        {% if form.age.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.age.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.addiction_type.id_for_label }}" class="form-label">Addiction Type</label>
+                        {{ form.addiction_type }}
+                        {% if form.addiction_type.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.addiction_type.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}" class="form-label">Description</label>
+                        {{ form.description }}
+                        {% if form.description.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.description.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.contact_number.id_for_label }}" class="form-label">Contact Number</label>
+                        {{ form.contact_number }}
+                        {% if form.contact_number.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.contact_number.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.patient_email.id_for_label }}" class="form-label">Email</label>
+                        {{ form.patient_email }}
+                        {% if form.patient_email.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.patient_email.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <h4 class="mt-4 mb-3">Guardian/Support Person Information</h4>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.guider_name.id_for_label }}" class="form-label">Guardian Name</label>
+                        {{ form.guider_name }}
+                        {% if form.guider_name.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.guider_name.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.guider_contact_number.id_for_label }}" class="form-label">Guardian Contact Number</label>
+                        {{ form.guider_contact_number }}
+                        {% if form.guider_contact_number.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.guider_contact_number.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.guider_email.id_for_label }}" class="form-label">Guardian Email</label>
+                        {{ form.guider_email }}
+                        {% if form.guider_email.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.guider_email.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="{{ form.guider_relationship.id_for_label }}" class="form-label">Relationship to Applicant</label>
+                        {{ form.guider_relationship }}
+                        {% if form.guider_relationship.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.guider_relationship.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="form-group" id="other-specify" style="display: none;">
+                        <label for="{{ form.other_relationship_specification.id_for_label }}" class="form-label">Please Specify Relationship</label>
+                        {{ form.other_relationship_specification }}
+                        {% if form.other_relationship_specification.errors %}
+                        <ul class="errorlist">
+                            {% for error in form.other_relationship_specification.errors %}
+                            <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid mt-4">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-paper-plane me-2"></i> Submit Application
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Show/hide other relationship field based on selection
+            $('#id_guider_relationship').on('change', function() {
+                if ($(this).val() === 'other') {
+                    $('#other-specify').show();
+                } else {
+                    $('#other-specify').hide();
+                }
+            });
+            
+            // Check initial value on page load
+            if ($('#id_guider_relationship').val() === 'other') {
+                $('#other-specify').show();
+            }
+        });
+    </script>
 </body>
 </html>

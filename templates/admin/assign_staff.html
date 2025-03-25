@@ -32,7 +32,7 @@
                         </div>
                     </div>
 
-                    <form method="POST" action="{% url 'assign_staff' application.id %}">
+                    <form id="assignStaffForm" method="POST" action="{% url 'assign_staff' application.id %}">
                         {% csrf_token %}
                         <div class="form-group">
                             <label for="staff_id"><strong>Select Staff Member:</strong></label>
@@ -56,6 +56,36 @@
     </div>
 </div>
 
+<!-- Success Modal -->
+<div class="modal fade" id="successModal" tabindex="-1" role="dialog" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successModalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="successMessage">
+                Staff assigned successfully!
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.5); z-index: 9999;">
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+        <div class="spinner-border text-light" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <h5 class="text-light mt-2">Processing...</h5>
+    </div>
+</div>
+
 <style>
 .badge {
     padding: 5px 10px;
@@ -72,4 +102,46 @@
     color: #212529;
 }
 </style>
+
+<script>
+$(document).ready(function() {
+    $('#assignStaffForm').on('submit', function(e) {
+        e.preventDefault();
+        
+        // Show loading overlay
+        $('#loadingOverlay').show();
+        
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: $(this).serialize(),
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            success: function(response) {
+                // Hide loading overlay
+                $('#loadingOverlay').hide();
+                
+                // Update success message
+                $('#successMessage').text(response.message);
+                
+                // Show success modal
+                $('#successModal').modal('show');
+                
+                // When modal is closed, go back to previous page
+                $('#successModal').on('hidden.bs.modal', function() {
+                    window.location.href = "{% url 'addiction_list' %}";
+                });
+            },
+            error: function(xhr) {
+                // Hide loading overlay
+                $('#loadingOverlay').hide();
+                
+                // Show error message
+                alert('An error occurred. Please try again.');
+            }
+        });
+    });
+});
+</script>
 {% endblock %}

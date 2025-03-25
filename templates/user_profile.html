@@ -1,19 +1,192 @@
 {% load static %}
 
 {% block content %}
-<div class="container mt-4" style="padding-top: 750px;">
+<style>
+    /* Profile Page Styles */
+    .profile-container {
+        padding: 40px 0;
+        background-color: #f8f9fa;
+    }
+    
+    .profile-card {
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow: hidden;
+        margin-bottom: 25px;
+        border: none;
+    }
+    
+    .profile-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    }
+    
+    .profile-header {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        color: white;
+        padding: 15px 20px;
+        font-weight: 600;
+    }
+    
+    .profile-image-container {
+        position: relative;
+        margin: 20px auto;
+        width: 150px;
+        height: 150px;
+    }
+    
+    .profile-image {
+        width: 150px;
+        height: 150px;
+        object-fit: cover;
+        border: 5px solid white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .edit-photo-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        transition: all 0.2s;
+    }
+    
+    .edit-photo-overlay:hover {
+        background-color: #4e73df;
+        color: white;
+    }
+    
+    .user-details {
+        padding: 20px;
+        border-top: 1px solid #eee;
+    }
+    
+    .detail-item {
+        padding: 10px 0;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    
+    .detail-label {
+        color: #6c757d;
+        font-size: 0.85rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+    
+    .detail-value {
+        font-weight: 500;
+        color: #333;
+    }
+    
+    .form-group {
+        margin-bottom: 25px;
+    }
+    
+    .form-control {
+        border-radius: 8px;
+        padding: 12px;
+        border: 1px solid #ddd;
+        transition: all 0.3s;
+    }
+    
+    .form-control:focus {
+        border-color: #4e73df;
+        box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
+    }
+    
+    .input-group-text {
+        background-color: #f8f9fa;
+        border-color: #ddd;
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #224abe 0%, #1a3a8f 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(78, 115, 223, 0.3);
+    }
+    
+    .btn-warning {
+        background: linear-gradient(135deg, #f6c23e 0%, #e0a800 100%);
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    
+    .btn-warning:hover {
+        background: linear-gradient(135deg, #e0a800 0%, #c69500 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(246, 194, 62, 0.3);
+    }
+    
+    .password-section {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        margin-top: 30px;
+    }
+    
+    .password-section h5 {
+        color: #4e73df;
+        font-weight: 600;
+        margin-bottom: 20px;
+    }
+    
+    .toggle-password {
+        cursor: pointer;
+    }
+    
+    /* Responsive adjustments */
+    @media (max-width: 767px) {
+        .profile-container {
+            padding: 20px 0;
+        }
+        
+        .profile-image-container {
+            width: 120px;
+            height: 120px;
+        }
+        
+        .profile-image {
+            width: 120px;
+            height: 120px;
+        }
+    }
+</style>
+
+<div class="container profile-container">
     <div class="row">
         <div class="col-md-4">
-            <div class="card">
+            <div class="card profile-card">
                 <div class="card-body text-center">
-                    <div class="profile-image-container mb-3 position-relative">
+                    <div class="profile-image-container">
                         {% if user.profile_photo %}
-                            <img src="{{ user.profile_photo.url }}" alt="Profile Photo" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                            <img src="{{ user.profile_photo.url }}" alt="Profile Photo" class="rounded-circle profile-image">
                         {% else %}
-                            <img src="{% static 'images/use.png' %}" alt="Default Profile" class="rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                            <img src="{% static 'images/use.png' %}" alt="Default Profile" class="rounded-circle profile-image">
                         {% endif %}
-                        <div class="edit-photo-overlay position-absolute" style="top: 0; right: 0; margin: 10px;">
-                            <label for="profile_photo" class="btn btn-sm btn-light rounded-circle" style="width: 32px; height: 32px; padding: 0; line-height: 32px;">
+                        <div class="edit-photo-overlay">
+                            <label for="profile_photo" style="margin-bottom: 0; cursor: pointer;">
                                 <i class="fas fa-camera"></i>
                             </label>
                         </div>
@@ -26,19 +199,19 @@
                     </form>
                     
                     <!-- Current Details Summary -->
-                    <div class="text-left border-top pt-3 mt-3">
+                    <div class="user-details">
                         <h6 class="text-primary mb-3">Current Details</h6>
-                        <div class="mb-2">
-                            <small class="text-muted d-block">Phone Number</small>
-                            <span>{{ user.phone_number|default:"Not set" }}</span>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone Number</div>
+                            <div class="detail-value">{{ user.phone_number|default:"Not set" }}</div>
                         </div>
-                        <div class="mb-2">
-                            <small class="text-muted d-block">Date of Birth</small>
-                            <span>{{ user.date_of_birth|date:"F d, Y"|default:"Not set" }}</span>
+                        <div class="detail-item">
+                            <div class="detail-label">Date of Birth</div>
+                            <div class="detail-value">{{ user.date_of_birth|date:"F d, Y"|default:"Not set" }}</div>
                         </div>
-                        <div class="mb-2">
-                            <small class="text-muted d-block">Gender</small>
-                            <span>{{ user.get_gender_display|default:"Not set" }}</span>
+                        <div class="detail-item">
+                            <div class="detail-label">Gender</div>
+                            <div class="detail-value">{{ user.get_gender_display|default:"Not set" }}</div>
                         </div>
                     </div>
                 </div>
@@ -46,8 +219,8 @@
         </div>
         
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <div class="card profile-card">
+                <div class="profile-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Edit Profile</h5>
                     <small class="text-white-50">* Click on fields to edit</small>
                 </div>
@@ -161,9 +334,7 @@
                         </button>
                     </form>
 
-                    <hr>
-
-                    <div class="mt-4">
+                    <div class="password-section">
                         <h5 class="d-flex align-items-center">
                             <i class="fas fa-key mr-2"></i> Change Password
                         </h5>
@@ -174,7 +345,7 @@
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="current_password" name="current_password" required>
                                     <div class="input-group-append">
-                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                        <span class="input-group-text toggle-password">
                                             <i class="fas fa-eye"></i>
                                         </span>
                                     </div>
@@ -185,7 +356,7 @@
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="new_password" name="new_password" required>
                                     <div class="input-group-append">
-                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                        <span class="input-group-text toggle-password">
                                             <i class="fas fa-eye"></i>
                                         </span>
                                     </div>
@@ -196,7 +367,7 @@
                                 <div class="input-group">
                                     <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
                                     <div class="input-group-append">
-                                        <span class="input-group-text toggle-password" style="cursor: pointer;">
+                                        <span class="input-group-text toggle-password">
                                             <i class="fas fa-eye"></i>
                                         </span>
                                     </div>
@@ -261,10 +432,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Highlight fields on focus
     document.querySelectorAll('.form-control').forEach(function(input) {
         input.addEventListener('focus', function() {
-            this.parentElement.style.boxShadow = '0 0 0 0.2rem rgba(0,123,255,.25)';
+            this.parentElement.classList.add('focused');
         });
         input.addEventListener('blur', function() {
-            this.parentElement.style.boxShadow = 'none';
+            this.parentElement.classList.remove('focused');
         });
     });
 });

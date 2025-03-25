@@ -3,177 +3,154 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>patient_list - Rehab Center</title>
+    <title>Patient List - Rehab Center</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-    .header {
-        background-color: #fff;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        padding: 10px 20px;
+    body {
+        background: linear-gradient(135deg, #f5f7fa 0%, #e6dbb9 100%);
+        font-family: 'Poppins', sans-serif;
+        min-height: 100vh;
     }
-
-    .logo-bar img {
-        height: 50px;
+    
+    .container {
+        padding-top: 30px;
+        padding-bottom: 30px;
     }
-
-    .nav-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
+    
+    .card {
+        border: none;
+        border-radius: 15px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        overflow: hidden;
+        margin-bottom: 30px;
     }
-
-    .nav-links {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
+    
+    .card-header {
+        background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%) !important;
+        color: white !important;
+        padding: 1.25rem;
+        border-bottom: none;
     }
-
-    .nav-links li {
-        margin: 0 15px;
+    
+    .card-body {
+        padding: 1.5rem;
+        background-color: white;
     }
-
-    .nav-links a {
-        color: #333;
-        text-decoration: none;
+    
+    .table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+    
+    .table th {
+        background-color: #f8f9fc;
+        color: #5a5c69;
+        font-weight: 600;
+        border-bottom: 2px solid #e3e6f0;
+        padding: 12px 15px;
+    }
+    
+    .table td {
+        padding: 12px 15px;
+        vertical-align: middle;
+        border-color: #e3e6f0;
+    }
+    
+    .table tbody tr:hover {
+        background-color: rgba(212, 175, 55, 0.05);
+    }
+    
+    .btn-primary {
+        background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%) !important;
+        border-color: #aa8c2c !important;
+        padding: 8px 16px;
+        border-radius: 5px;
         font-weight: 500;
+        transition: all 0.3s;
     }
-
-    .search-bar input {
-        padding: 8px 15px;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        width: 200px;
+    
+    .btn-primary:hover {
+        background: linear-gradient(135deg, #aa8c2c 0%, #8a732a 100%) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
     }
-
-    .user-icon {
-        position: relative;
-        cursor: pointer;
+    
+    .btn-success {
+        background-color: #1cc88a !important;
+        border-color: #1cc88a !important;
+        transition: all 0.3s;
     }
-
-    .user-icon img {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
+    
+    .btn-success:hover {
+        background-color: #169b6b !important;
+        border-color: #169b6b !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(28, 200, 138, 0.3);
     }
-
-    .user-dropdown {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 100%;
-        background: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        border-radius: 8px;
-        min-width: 200px;
-        z-index: 1000;
+    
+    .btn-danger {
+        background-color: #e74a3b !important;
+        border-color: #e74a3b !important;
+        transition: all 0.3s;
     }
-
-    .user-icon:hover .user-dropdown {
-        display: block;
+    
+    .btn-danger:hover {
+        background-color: #c0392b !important;
+        border-color: #c0392b !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(231, 74, 59, 0.3);
     }
-
-    .user-info {
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        align-items: center;
+    
+    .btn-info {
+        background-color: #36b9cc !important;
+        border-color: #36b9cc !important;
+        transition: all 0.3s;
     }
-
-    .user-info img {
-        width: 30px;
-        height: 30px;
-        margin-right: 10px;
+    
+    .btn-info:hover {
+        background-color: #2a96a5 !important;
+        border-color: #2a96a5 !important;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(54, 185, 204, 0.3);
     }
-
-    .user-dropdown a {
-        display: flex;
-        align-items: center;
-        padding: 10px 15px;
-        color: #333;
-        text-decoration: none;
-        transition: background-color 0.2s;
+    
+    .badge-primary {
+        background-color: #d4af37;
     }
-
-    .user-dropdown a i {
-        margin-right: 10px;
-        width: 20px;
+    
+    .badge-success {
+        background-color: #1cc88a;
     }
-
-    .user-dropdown a:hover {
-        background-color: #f8f9fa;
+    
+    .badge-warning {
+        background-color: #f6c23e;
+        color: #5a5c69;
     }
-
+    
+    .badge-danger {
+        background-color: #e74a3b;
+    }
+    
+    .footer {
+        background-color: #f8f9fc !important;
+        border-top: 1px solid #e3e6f0;
+    }
+    
     main {
         min-height: calc(100vh - 180px);
         padding: 20px 0;
     }
-
-    .footer {
-        background-color: #f8f9fa;
-        padding: 20px 0;
-        text-align: center;
-    }
     
+    .alert {
+        border-radius: 8px;
+        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+    }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="logo-bar">
-            <img src="{% static 'images/logo.png' %}" alt="Logo">
-        </div>
-        <nav class="nav-bar">
-            <!-- <ul class="nav-links">
-                <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="#">Services &#9662;</a></li>
-                <a href="{% url 'user_gallery' %}">Gallery</a> 
-                {% if user.is_authenticated and user.is_patient %}
-                <li><a href="{% url 'patient_activities' %}">Activities</a></li>
-                {% endif %}
-                <li><a href="{% url 'about' %}">About Us</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
-            </ul>
-            <div class="search-bar">
-                <input type="text" placeholder="Search...">
-            </div> -->
-            <!-- <div class="user-icon">
-                <img src="{% static 'images/use.png' %}" alt="User Icon">
-                <div class="user-dropdown">
-                    {% if user.is_authenticated %}
-                    <div class="user-info">
-                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
-                        <span>{{ user.username }}</span>
-                    </div>
-                    <a href="{% url 'user_dashboard' %}">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    {% if user.is_patient %}
-                    <a href="{% url 'patient_activities' %}">
-                        <i class="fas fa-tasks"></i> My Activities
-                    </a>
-                    {% endif %}
-                    <a href="{% url 'user_profile' %}">
-                        <i class="fas fa-user"></i> Profile
-                    </a>
-                    <a href="{% url 'logout' %}">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                    {% else %}
-                    <a href="{% url 'user_register' %}">
-                        <i class="fas fa-user-plus"></i> Register
-                    </a>
-                    <a href="{% url 'user_login' %}">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </a>
-                    {% endif %}
-                </div> -->
-            </div>
-        </nav>
-    </header>
-
     {% if messages %}
     <div class="container mt-3">
         {% for message in messages %}

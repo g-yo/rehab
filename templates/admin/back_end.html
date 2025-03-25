@@ -3,112 +3,428 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Back End</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
-        .admin-dashboard-options {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px;
+        :root {
+            --primary: #4e73df;
+            --secondary: #6c757d;
+            --success: #1cc88a;
+            --info: #36b9cc;
+            --warning: #f6c23e;
+            --danger: #e74a3b;
+            --light: #f8f9fc;
+            --dark: #5a5c69;
         }
-        .admin-dashboard-option-box {
-            background: #fff;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            text-align: center;
-            text-decoration: none;
-            color: #333;
-            width: 200px;
-            transition: transform 0.3s ease;
-            position: relative;
+        
+        body {
+            background-color: #f8f9fc;
+            font-family: 'Nunito', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         }
-        .admin-dashboard-option-box:hover {
-            transform: translateY(-5px);
+        
+        .dashboard-container {
+            padding: 1.5rem;
         }
-        .admin-dashboard-option-box i {
-            font-size: 2em;
-            margin-bottom: 10px;
-            color: #007bff;
-        }
-        .admin-dashboard-option-box span {
-            display: block;
-            font-size: 1.1em;
-        }
-        .admin-dashboard-title {
-            text-align: center;
-            margin: 20px 0;
-            color: #333;
-        }
-        .notification-badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #dc3545;
+        
+        .dashboard-header {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
             color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .dashboard-header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 1.75rem;
+        }
+        
+        .dashboard-header p {
+            margin: 0.5rem 0 0;
+            opacity: 0.8;
+        }
+        
+        .stats-row {
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-card {
+            border-radius: 0.5rem;
+            padding: 1.25rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            border-left: 0.25rem solid;
+            margin-bottom: 1.5rem;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .stat-card.primary {
+            border-left-color: var(--primary);
+        }
+        
+        .stat-card.success {
+            border-left-color: var(--success);
+        }
+        
+        .stat-card.info {
+            border-left-color: var(--info);
+        }
+        
+        .stat-card.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .stat-card .stat-title {
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-card .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 0;
+        }
+        
+        .stat-card .stat-icon {
+            position: absolute;
+            right: 1.25rem;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+        
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--dark);
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e3e6f0;
+        }
+        
+        .admin-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            transition: all 0.3s ease;
+            margin-bottom: 1.5rem;
+            position: relative;
+            overflow: hidden;
+            height: 100%;
+        }
+        
+        .admin-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .admin-card .card-icon {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
+            height: 4rem;
+            font-size: 2rem;
+            color: white;
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        }
+        
+        .admin-card.users .card-icon {
+            background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);
+        }
+        
+        .admin-card.gallery .card-icon {
+            background: linear-gradient(135deg, #1cc88a 0%, #13855c 100%);
+        }
+        
+        .admin-card.staff .card-icon {
+            background: linear-gradient(135deg, #36b9cc 0%, #258391 100%);
+        }
+        
+        .admin-card.conference .card-icon {
+            background: linear-gradient(135deg, #f6c23e 0%, #dda20a 100%);
+        }
+        
+        .admin-card.applications .card-icon {
+            background: linear-gradient(135deg, #e74a3b 0%, #be2617 100%);
+        }
+        
+        .admin-card.patients .card-icon {
+            background: linear-gradient(135deg, #5a5c69 0%, #373840 100%);
+        }
+        
+        .admin-card.yoga .card-icon {
+            background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        }
+        
+        .admin-card .card-body {
+            padding: 1.25rem;
+            text-align: center;
+        }
+        
+        .admin-card .card-title {
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        
+        .admin-card .card-text {
+            color: var(--secondary);
+            font-size: 0.875rem;
+            margin-bottom: 1rem;
+        }
+        
+        .notification-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background-color: var(--danger);
+            color: white;
+            border-radius: 50%;
+            width: 1.5rem;
+            height: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 1;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-header {
+                padding: 1rem;
+            }
+            
+            .dashboard-header h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <h2 class="admin-dashboard-title">BACK-END MANAGEMENT</h2>
-    <div class="admin-dashboard-options">
-        <a href="{% url 'admin_user_list' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-users"></i>
-            <span>Users</span>
-        </a>
-        <a href="{% url 'gallery' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-tasks"></i>
-            <span>Gallery</span>
-        </a>
-        <a href="{% url 'staff_list' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-user-tie"></i>
-            <span>Staff</span>
-        </a>
-        <a href="{% url 'conference_list' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-video"></i>
-            <span>Video Conferences</span>
-        </a>
-        <a href="{% url 'schedule_conference' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-calendar-plus"></i>
-            <span>Schedule Conference</span>
-        </a>
-        <a href="{% url 'addiction_list' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-clipboard-list"></i>
-            <span>Applications</span>
-            {% if pending_applications > 0 %}
-            <div class="notification-badge">{{ pending_applications }}</div>
-            {% endif %}
-        </a>
-        <a href="{% url 'patients' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-procedures"></i>
-            <span>Patients</span>
-        </a>
-        <a href="{% url 'patient_list' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-procedures"></i>
-            <span>Patient List</span>
-        </a>
-        <a href="{% url 'add_yoga' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-spa"></i>
-            <span>Add Yoga</span>
-        </a>
-        <a href="{% url 'yoga_list' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-list"></i>
-            <span>Yoga Classes</span>
-        </a>
-        <a href="{% url 'manage_group_conference' %}" class="admin-dashboard-option-box">
-            <i class="fas fa-users-cog"></i>
-            <span>Manage Group Conference</span>
-        </a>
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <h1><i class="fas fa-tachometer-alt me-2"></i> Admin Dashboard</h1>
+            <p>Welcome to the Rehab Center Administration Panel</p>
+        </div>
+        
+        <!-- Stats Row -->
+        <div class="row stats-row">
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card primary">
+                    <div class="stat-title">Total Users</div>
+                    <div class="stat-value">{{ total_users|default:"0" }}</div>
+                    <i class="fas fa-users stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card success">
+                    <div class="stat-title">Applications</div>
+                    <div class="stat-value">{{ total_applications|default:"0" }}</div>
+                    <i class="fas fa-clipboard-list stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card info">
+                    <div class="stat-title">Staff Members</div>
+                    <div class="stat-value">{{ total_staff|default:"0" }}</div>
+                    <i class="fas fa-user-tie stat-icon"></i>
+                </div>
+            </div>
+            <div class="col-xl-3 col-md-6">
+                <div class="stat-card warning">
+                    <div class="stat-title">Upcoming Conferences</div>
+                    <div class="stat-value">{{ upcoming_conferences|default:"0" }}</div>
+                    <i class="fas fa-video stat-icon"></i>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Management Section -->
+        <h2 class="section-title"><i class="fas fa-cogs me-2"></i> Management</h2>
+        <div class="row">
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'admin_user_list' %}" class="text-decoration-none">
+                    <div class="admin-card users">
+                        <div class="card-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Users</h5>
+                            <p class="card-text">Manage user accounts and permissions</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'gallery' %}" class="text-decoration-none">
+                    <div class="admin-card gallery">
+                        <div class="card-icon">
+                            <i class="fas fa-images"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Gallery</h5>
+                            <p class="card-text">Manage photos and media content</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'staff_list' %}" class="text-decoration-none">
+                    <div class="admin-card staff">
+                        <div class="card-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Staff</h5>
+                            <p class="card-text">Manage staff members and roles</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'conference_list' %}" class="text-decoration-none">
+                    <div class="admin-card conference">
+                        <div class="card-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Video Conferences</h5>
+                            <p class="card-text">View and manage all conferences</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'schedule_conference' %}" class="text-decoration-none">
+                    <div class="admin-card conference">
+                        <div class="card-icon">
+                            <i class="fas fa-calendar-plus"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Schedule Conference</h5>
+                            <p class="card-text">Create new video conferences</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'addiction_list' %}" class="text-decoration-none">
+                    <div class="admin-card applications">
+                        <div class="card-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Applications</h5>
+                            <p class="card-text">Review treatment applications</p>
+                        </div>
+                        {% if pending_applications > 0 %}
+                        <div class="notification-badge">{{ pending_applications }}</div>
+                        {% endif %}
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'patients' %}" class="text-decoration-none">
+                    <div class="admin-card patients">
+                        <div class="card-icon">
+                            <i class="fas fa-procedures"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Patients</h5>
+                            <p class="card-text">Manage patient information</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'patient_list' %}" class="text-decoration-none">
+                    <div class="admin-card patients">
+                        <div class="card-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Patient List</h5>
+                            <p class="card-text">View complete patient list</p>
+                        </div>
+                    </div>
+                </a>
+            </div> -->
+        </div>
+        
+        <!-- Yoga Section -->
+        <h2 class="section-title"><i class="fas fa-spa me-2"></i> Yoga Management</h2>
+        <div class="row">
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'add_yoga' %}" class="text-decoration-none">
+                    <div class="admin-card yoga">
+                        <div class="card-icon">
+                            <i class="fas fa-plus"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Add Yoga</h5>
+                            <p class="card-text">Create new yoga classes</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'yoga_list' %}" class="text-decoration-none">
+                    <div class="admin-card yoga">
+                        <div class="card-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Yoga Classes</h5>
+                            <p class="card-text">View and manage yoga sessions</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="col-xl-3 col-md-4 col-sm-6 mb-4">
+                <a href="{% url 'manage_group_conference' %}" class="text-decoration-none">
+                    <div class="admin-card conference">
+                        <div class="card-icon">
+                            <i class="fas fa-users-cog"></i>
+                        </div>
+                        <div class="card-body">
+                            <h5 class="card-title">Group Conference</h5>
+                            <p class="card-text">Manage group conference sessions</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
     </div>
+    
+    <!-- Bootstrap and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -88,4 +88,6 @@ urlpatterns = [
     # PDF Generation
     path('application/<int:application_id>/pdf/', views.generate_application_pdf, name='generate_application_pdf'),
     path('applications/pdf/all/', views.generate_application_pdf_all, name='generate_application_pdf_all'),
-]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

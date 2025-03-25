@@ -6,22 +6,24 @@
     <meta charset="UTF-8">
     <title>User Registration</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <!-- Add Font Awesome for eye icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         /* Container Styles */
         .auth-container {
             display: flex;
-margin-right:1500px;
-margin-left:0;
+            margin-right:1500px;
+            margin-left:0;
             height: 250px;
             width:100%;
             background-color: #ffe100;
             margin-top:0;
             padding-top:0;     
-        z-index: -1;
+            z-index: -1;
         }
 
         .registration-form {
-        margin-top:0px;
+            margin-top:0px;
             width: 70%;
             margin-left:10%;
             /* padding: 20px; */
@@ -29,7 +31,7 @@ margin-left:0;
             border-radius: 10px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             background-color: #fff;
-margin-bottom:10%;
+            margin-bottom:10%;
 
         }
 
@@ -90,6 +92,37 @@ margin-bottom:10%;
             height: 20px;
             margin-right: 10px;
         }
+        
+        /* Error message styles */
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #f5c6cb;
+            border-radius: 5px;
+        }
+        
+        /* Password field container */
+        .password-container {
+            position: relative;
+            width: 95%;
+            margin-bottom: 15px;
+        }
+        
+        .password-container input {
+            width: 100%;
+            margin-bottom: 0;
+        }
+        
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #666;
+        }
     </style>
 </head>
 <body>
@@ -133,15 +166,33 @@ margin-bottom:10%;
         </nav>
       </header>
     <div class="auth-container">
-</div>
+    </div>
 
         <div class="registration-form">
             <h2>Register</h2>
+            
+            {% if messages %}
+            <div class="error-message">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            </div>
+            {% endif %}
+            
             <form method="post" enctype="multipart/form-data" action="{% url 'register' %}">
                 {% csrf_token %}
                 <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password1" placeholder="Password" required>
-                <input type="password" name="password2" placeholder="Confirm Password" required>
+                
+                <div class="password-container">
+                    <input type="password" name="password1" id="password1" placeholder="Password" required>
+                    <i class="password-toggle fas fa-eye" onclick="togglePassword('password1')"></i>
+                </div>
+                
+                <div class="password-container">
+                    <input type="password" name="password2" id="password2" placeholder="Confirm Password" required>
+                    <i class="password-toggle fas fa-eye" onclick="togglePassword('password2')"></i>
+                </div>
+                
                 <input type="text" name="first_name" placeholder="First Name" required>
                 <input type="text" name="last_name" placeholder="Last Name" required>
                 <input type="number" name="age" placeholder="Age" required>
@@ -182,5 +233,22 @@ margin-bottom:10%;
         </div>
         <p>&copy; 2025 Rehab Center. All Rights Reserved.</p>
     </footer>
+
+    <script>
+        function togglePassword(fieldId) {
+            const passwordField = document.getElementById(fieldId);
+            const icon = event.target;
+            
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                icon.classList.remove("fa-eye");
+                icon.classList.add("fa-eye-slash");
+            } else {
+                passwordField.type = "password";
+                icon.classList.remove("fa-eye-slash");
+                icon.classList.add("fa-eye");
+            }
+        }
+    </script>
 </body>
 </html>

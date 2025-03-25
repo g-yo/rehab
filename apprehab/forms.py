@@ -60,27 +60,42 @@ class AddictionDetailsForm(forms.ModelForm):
         cleaned_data = super().clean()
         guider_relationship = cleaned_data.get('guider_relationship')
         other_relationship_specification = cleaned_data.get('other_relationship_specification')
+        age = cleaned_data.get('age')
 
         if guider_relationship == 'other' and not other_relationship_specification:
             raise forms.ValidationError({
                 'other_relationship_specification': 'Please specify the relationship when selecting Other'
             })
+            
+        # Age validation
+        if age is not None:
+            if age < 14:
+                raise forms.ValidationError({
+                    'age': 'Our services are only available for individuals aged 14 and above.'
+                })
+            elif age > 22:
+                raise forms.ValidationError({
+                    'age': 'Our services are only available for individuals aged 22 and below.'
+                })
+                
         return cleaned_data
 
 class StaffForm(forms.ModelForm):
     email = forms.EmailField(
         required=True,
-        widget=forms.EmailInput(attrs={'class': 'form-control'})
+        widget=forms.EmailInput(attrs={'class': 'form-control'}),
+        help_text='Staff email address for login credentials'
     )
     
     class Meta:
         model = Staff
-        fields = ['name', 'email', 'photo', 'position', 'age']
+        fields = ['name', 'email', 'photo', 'position', 'age', 'specialization']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'photo': forms.ClearableFileInput(attrs={'class': 'form-control'}),
-            'position': forms.TextInput(attrs={'class': 'form-control'}),
+            'position': forms.Select(attrs={'class': 'form-control'}),
             'age': forms.NumberInput(attrs={'class': 'form-control'}),
+            'specialization': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
 class AssignPatientForm(forms.ModelForm):
@@ -140,3 +155,15 @@ class YogaSessionForm(forms.ModelForm):
         widgets = {
             'scheduled_time': forms.DateTimeInput(attrs={'type': 'datetime-local'}),
         }
+
+class ContactForm(forms.Form):
+    name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Your Name'})
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Your Email'})
+    )
+    message = forms.CharField(
+        widget=forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Your Message', 'rows': 5})
+    )

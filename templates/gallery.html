@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Gallery</title>
+    {% load static %}
     <style>
         /* General Body Styles */
         body {
@@ -13,9 +14,27 @@
             text-align: center;
         }
 
+        /* Header styles */
+        .header {
+            background-color: #fff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 10px 20px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo-bar img {
+            height: 50px;
+        }
+
         /* Gallery Title */
         .gallery-title, .gallery-form-title {
-            margin-top: 50px;
+            margin-top: 80px;
             font-size: 2.5rem;
             color: #333;
         }
@@ -150,6 +169,11 @@
     </style>
 </head>
 <body>
+    <header class="header">
+        <div class="logo-bar">
+            <img src="{% static 'logo.png' %}" alt="Logo">
+        </div>
+    </header>
     <h2 class="gallery-title">Gallery</h2>
     <div class="gallery-container">
         {% for image in images %}
@@ -163,5 +187,8 @@
         {% endfor %}
     </div>
     <a href="{% url 'add_image' %}" class="gallery-add-image-button">Add Image</a>
+    
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="{% static 'js/header-scroll.js' %}"></script>
 </body>
 </html>

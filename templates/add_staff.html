@@ -2,89 +2,143 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Staff</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
-            text-align: center;
             padding: 20px;
         }
-
         .container {
-            background: white;
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-        }
-
-        label {
-            display: block;
-            font-weight: bold;
-            margin-top: 10px;
-            text-align: left;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        input[type="file"] {
+            width: 80%;
+            margin: 0 auto;
             background-color: #fff;
-            padding: 5px;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-
-        button {
+        h2 {
+            color: #333;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="number"],
+        select,
+        textarea {
             width: 100%;
             padding: 10px;
-            margin-top: 20px;
-            background: #28a745;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #007bff;
             color: white;
             border: none;
+            padding: 12px 20px;
             border-radius: 5px;
-            font-size: 16px;
             cursor: pointer;
-            transition: 0.3s ease-in-out;
+            margin-top: 20px;
+            width: 100%;
+            font-size: 16px;
         }
-
         button:hover {
-            background: #218838;
+            background-color: #0069d9;
+        }
+        .form-text {
+            color: #6c757d;
+            font-size: 0.875rem;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+        }
+        .alert-danger {
+            color: #721c24;
+            background-color: #f8d7da;
+            border-color: #f5c6cb;
+        }
+        .alert-success {
+            color: #155724;
+            background-color: #d4edda;
+            border-color: #c3e6cb;
         }
     </style>
 </head>
 <body>
-
     <div class="container">
         <h2>Add New Staff</h2>
+        
+        <!-- Display messages at the top of the form -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        
         <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
             <label for="id_name">Name</label>
             {{ form.name }}
+            {% if form.name.errors %}
+                <div class="alert alert-danger">{{ form.name.errors }}</div>
+            {% endif %}
+
+            <label for="id_email">Email</label>
+            {{ form.email }}
+            {% if form.email.errors %}
+                <div class="alert alert-danger">{{ form.email.errors }}</div>
+            {% endif %}
+            <small class="form-text text-muted">{{ form.email.help_text }}</small>
 
             <label for="id_photo">Photo</label>
             {{ form.photo }}
+            {% if form.photo.errors %}
+                <div class="alert alert-danger">{{ form.photo.errors }}</div>
+            {% endif %}
 
             <label for="id_position">Position</label>
             {{ form.position }}
+            {% if form.position.errors %}
+                <div class="alert alert-danger">{{ form.position.errors }}</div>
+            {% endif %}
+
+            <label for="id_specialization">Specialization</label>
+            {{ form.specialization }}
+            {% if form.specialization.errors %}
+                <div class="alert alert-danger">{{ form.specialization.errors }}</div>
+            {% endif %}
 
             <label for="id_age">Age</label>
             {{ form.age }}
+            {% if form.age.errors %}
+                <div class="alert alert-danger">{{ form.age.errors }}</div>
+            {% endif %}
 
             <button type="submit">Add Staff</button>
         </form>
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -8,182 +8,199 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .body{
-            margin-top:150px;
-
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e6dbb9 100%);
+            font-family: 'Poppins', sans-serif;
+            min-height: 100vh;
         }
-    .header {
-        background-color: #fff;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        padding: 10px 20px;
-    }
-
-    .logo-bar img {
-        height: 50px;
-    }
-
-    .nav-bar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-    .nav-links {
-        display: flex;
-        list-style: none;
-        margin: 0;
-        padding: 0;
-    }
-
-    .nav-links li {
-        margin: 0 15px;
-    }
-
-    .nav-links a {
-        color: #333;
-        text-decoration: none;
-        font-weight: 500;
-    }
-
-    .search-bar input {
-        padding: 8px 15px;
-        border: 1px solid #ddd;
-        border-radius: 20px;
-        width: 200px;
-    }
-
-    .user-icon {
-        position: relative;
-        cursor: pointer;
-    }
-
-    .user-icon img {
-        width: 35px;
-        height: 35px;
-        border-radius: 50%;
-    }
-
-    .user-dropdown {
-        display: none;
-        position: absolute;
-        right: 0;
-        top: 100%;
-        background: white;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        border-radius: 8px;
-        min-width: 200px;
-        z-index: 1000;
-    }
-
-    .user-icon:hover .user-dropdown {
-        display: block;
-    }
-
-    .user-info {
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-        display: flex;
-        align-items: center;
-    }
-
-    .user-info img {
-        width: 30px;
-        height: 30px;
-        margin-right: 10px;
-    }
-
-    .user-dropdown a {
-        display: flex;
-        align-items: center;
-        padding: 10px 15px;
-        color: #333;
-        text-decoration: none;
-        transition: background-color 0.2s;
-    }
-
-    .user-dropdown a i {
-        margin-right: 10px;
-        width: 20px;
-    }
-
-    .user-dropdown a:hover {
-        background-color: #f8f9fa;
-    }
-
-    main {
-        min-height: calc(100vh - 180px);
-        padding: 20px 0;
-    }
-
-    .footer {
-        background-color: #f8f9fa;
-        padding: 20px 0;
-        text-align: center;
-    }
-    .container{
-        margin-top: 350px;
-        padding-top: 350px;
-    }
-
+        
+        .container {
+            padding-top: 30px;
+            padding-bottom: 30px;
+            max-width: 1000px;
+        }
+        
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+            overflow: hidden;
+            margin-bottom: 30px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0.5rem 2rem 0 rgba(58, 59, 69, 0.2);
+        }
+        
+        .card-header {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%) !important;
+            color: white !important;
+            padding: 1.25rem;
+            border-bottom: none;
+            border-radius: 15px 15px 0 0 !important;
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+            background-color: white;
+        }
+        
+        .form-control {
+            border-radius: 5px;
+            border: 1px solid #e3e6f0;
+            padding: 10px 15px;
+            height: auto;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            font-size: 0.9rem;
+        }
+        
+        .form-control:focus {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        }
+        
+        .form-group label {
+            font-weight: 500;
+            color: #5a5c69;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .form-group label i {
+            margin-right: 8px;
+            color: #d4af37;
+            width: 16px;
+            text-align: center;
+        }
+        
+        .btn {
+            border-radius: 5px;
+            font-weight: 500;
+            padding: 8px 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%) !important;
+            border-color: #aa8c2c !important;
+            padding: 8px 16px;
+            border-radius: 5px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #aa8c2c 0%, #8a732a 100%) !important;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-secondary {
+            background-color: #5a5c69;
+            border-color: #5a5c69;
+            transition: all 0.3s;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #484a54;
+            border-color: #484a54;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(90, 92, 105, 0.3);
+        }
+        
+        .alert {
+            border-radius: 10px;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border: none;
+            box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+        }
+        
+        .custom-file-input:focus ~ .custom-file-label {
+            border-color: #d4af37;
+            box-shadow: 0 0 0 0.2rem rgba(212, 175, 55, 0.25);
+        }
+        
+        .custom-file-label {
+            border-radius: 5px;
+            border: 1px solid #e3e6f0;
+            padding: 10px 15px;
+            height: calc(1.5em + 0.75rem + 2px);
+        }
+        
+        .custom-file-label::after {
+            height: calc(1.5em + 0.75rem);
+            padding: 10px 15px;
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+            color: white;
+            border: none;
+        }
+        
+        .form-text {
+            color: #858796;
+            font-size: 0.8rem;
+        }
+        
+        .footer {
+            background-color: #f8f9fc !important;
+            border-top: 1px solid #e3e6f0;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        .browse-btn {
+            background: linear-gradient(135deg, #d4af37 0%, #aa8c2c 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 8px 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .browse-btn:hover {
+            background: linear-gradient(135deg, #aa8c2c 0%, #8a732a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.3);
+        }
+        
+        .header-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+        }
+        
+        .header-title i {
+            margin-right: 10px;
+            font-size: 1.25rem;
+        }
+        
+        /* Hide the default browser "Please wait" cursor during form submission */
+        html.nprogress-busy {
+            cursor: default !important;
+        }
+        
+        /* Hide any loading indicators */
+        #nprogress {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
-    <header class="header">
-        <div class="logo-bar">
-            <img src="{% static 'images/logo.png' %}" alt="Logo">
-        </div>
-        <!-- <nav class="nav-bar">
-            <ul class="nav-links"> -->
-                <!-- <li><a href="{% url 'home' %}">Home</a></li>
-                <li><a href="#">Services &#9662;</a></li>
-                <a href="{% url 'user_gallery' %}">Gallery</a> 
-                {% if user.is_authenticated and user.is_patient %}
-                <li><a href="{% url 'patient_activities' %}">Activities</a></li>
-                {% endif %}
-                <li><a href="{% url 'about' %}">About Us</a></li>
-                <li><a href="{% url 'contact' %}">Contact</a></li>
-            </ul>
-            <div class="search-bar">
-                <input type="text" placeholder="Search...">
-            </div> -->
-            <!-- <div class="user-icon">
-                <img src="{% static 'images/use.png' %}" alt="User Icon">
-                <div class="user-dropdown">
-                    {% if user.is_authenticated %}
-                    <div class="user-info">
-                        <img src="{% if user.profile_photo %}{{ user.profile_photo.url }}{% else %}{% static 'images/use.png' %}{% endif %}" alt="Profile Photo">
-                        <span>{{ user.username }}</span>
-                    </div>
-                    <a href="{% url 'user_dashboard' %}">
-                        <i class="fas fa-tachometer-alt"></i> Dashboard
-                    </a>
-                    {% if user.is_patient %}
-                    <a href="{% url 'patient_activities' %}">
-                        <i class="fas fa-tasks"></i> My Activities
-                    </a>
-                    {% endif %}
-                    <a href="{% url 'user_profile' %}">
-                        <i class="fas fa-user"></i> Profile
-                    </a>
-                    <a href="{% url 'logout' %}">
-                        <i class="fas fa-sign-out-alt"></i> Logout
-                    </a>
-                    {% else %}
-                    <a href="{% url 'user_register' %}">
-                        <i class="fas fa-user-plus"></i> Register
-                    </a>
-                    <a href="{% url 'user_login' %}">
-                        <i class="fas fa-sign-in-alt"></i> Login
-                    </a>
-                    {% endif %}
-                </div>
-            </div>
-        </nav> -->
-    </header>
-
     {% if messages %}
-    <div class="container mt-3">
+    <div class="container">
         {% for message in messages %}
         <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
             {{ message }}
@@ -196,38 +213,51 @@
     {% endif %}
 
     <main>
-        
-<div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="container">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Add New Yoga Exercise</h4>
+                <div class="card-header">
+                    <div class="header-actions">
+                        <div class="header-title">
+                            <i class="fas fa-spa"></i>
+                            <h4 class="mb-0">Add New Yoga Session</h4>
+                        </div>
+                        <a href="{% url 'yoga_list' %}" class="btn btn-light btn-sm">
+                            <i class="fas fa-list mr-1"></i> View All Sessions
+                        </a>
+                    </div>
                 </div>
                 <div class="card-body">
                     <form method="post" enctype="multipart/form-data">
                         {% csrf_token %}
+                        
+                        <!-- Yoga Name -->
                         <div class="form-group">
-                            <label for="name">Yoga Name</label>
+                            <label for="name"><i class="fas fa-spa"></i> Yoga Name</label>
                             <input type="text" class="form-control" id="name" name="name" required>
                         </div>
+                        
+                        <!-- Description -->
                         <div class="form-group">
-                            <label for="description">Description</label>
+                            <label for="description"><i class="fas fa-align-left"></i> Description</label>
                             <textarea class="form-control" id="description" name="description" rows="3" required></textarea>
                         </div>
+                        
+                        <!-- Date/Time and Duration -->
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="scheduled_time">Start Date & Time</label>
+                                <label for="scheduled_time"><i class="far fa-calendar-alt"></i> Start Date & Time</label>
                                 <input type="datetime-local" class="form-control" id="scheduled_time" name="scheduled_time" required>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="duration">Duration (minutes)</label>
+                                <label for="duration"><i class="far fa-clock"></i> Duration (minutes)</label>
                                 <input type="number" class="form-control" id="duration" name="duration" value="60" required>
                             </div>
                         </div>
+                        
+                        <!-- Staff and Program Day -->
                         <div class="form-row">
                             <div class="form-group col-md-6">
-                                <label for="staff">Select Staff</label>
+                                <label for="staff"><i class="fas fa-user-md"></i> Select Staff</label>
                                 <select class="form-control" id="staff" name="staff" required>
                                     <option value="">Choose Staff...</option>
                                     {% for staff in staffs %}
@@ -236,7 +266,7 @@
                                 </select>
                             </div>
                             <div class="form-group col-md-6">
-                                <label for="program_day">Program Day</label>
+                                <label for="program_day"><i class="fas fa-calendar-day"></i> Program Day</label>
                                 <select class="form-control" id="program_day" name="program_day" required>
                                     <option value="1">Day 1</option>
                                     <option value="2">Day 2</option>
@@ -248,8 +278,10 @@
                                 </select>
                             </div>
                         </div>
+                        
+                        <!-- Patient -->
                         <div class="form-group">
-                            <label for="patient">Select Patient</label>
+                            <label for="patient"><i class="fas fa-user"></i> Select Patient</label>
                             <select class="form-control" id="patient" name="patient" required>
                                 <option value="">Choose a patient...</option>
                                 {% for application in approved_applications %}
@@ -264,29 +296,84 @@
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label for="animation_url">Animation URL (optional)</label>
-                            <input type="url" class="form-control" id="animation_url" name="animation_url">
+                        
+                        <!-- Animation URL -->
+                        <!-- <div class="form-group">
+                            <label for="animation_url"><i class="fas fa-video"></i> Animation URL (optional)</label>
+                            <input type="url" class="form-control" id="animation_url" name="animation_url" placeholder="https://www.youtube.com/embed/...">
+                            <small class="form-text text-muted">Enter a YouTube embed URL or other video URL</small>
                         </div>
-                        <div class="form-group">
-                            <label for="image">Yoga Image</label>
-                            <input type="file" class="form-control-file" id="image" name="image">
+                         -->
+                        <!-- Yoga Image -->
+                        <!-- <div class="form-group">
+                            <label for="image"><i class="fas fa-image"></i> Yoga Image</label>
+                            <div class="input-group">
+                                <div class="custom-file">
+                                    <input type="file" class="custom-file-input" id="image" name="image">
+                                    <label class="custom-file-label" for="image">Choose file...</label>
+                                </div>
+                                <div class="input-group-append">
+                                    <span class="input-group-text browse-btn">Browse</span>
+                                </div>
+                            </div>
+                            <small class="form-text text-muted">Upload an image showing the yoga pose (optional)</small>
+                        </div> -->
+                        
+                        <!-- Submit buttons -->
+                        <div class="form-group mt-4 text-center">
+                            <button type="submit" class="btn btn-primary" id="submitBtn">
+                                <i class="fas fa-save mr-1"></i> Add Yoga
+                            </button>
+                            <a href="{% url 'yoga_list' %}" class="btn btn-secondary">
+                                <i class="fas fa-times mr-1"></i> Cancel
+                            </a>
                         </div>
-                        <button type="submit" class="btn btn-primary">Add Yoga</button>
                     </form>
                 </div>
             </div>
         </div>
-    </div>
-</div>
-
     </main>
 
-    
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <span class="text-muted">{% now "Y" %} Rehab Center. All rights reserved.</span>
+        </div>
+    </footer>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
-    
+    <script>
+        // Add the file name to the custom file input label when a file is selected
+        $(".custom-file-input").on("change", function() {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+        
+        // Make the Browse button trigger the file input
+        $(".browse-btn").on("click", function() {
+            $(this).parents(".input-group").find(".custom-file-input").click();
+        });
+        
+        // Disable the "please wait" cursor and loading indicators
+        document.addEventListener('DOMContentLoaded', function() {
+            // Override the default cursor behavior
+            document.documentElement.style.cursor = 'default';
+            
+            // Prevent any loading indicators from showing
+            var style = document.createElement('style');
+            style.innerHTML = `
+                html.nprogress-busy, 
+                html.nprogress-busy * {
+                    cursor: default !important;
+                }
+                #nprogress, 
+                .nprogress-custom-parent {
+                    display: none !important;
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
 </body>
 </html>

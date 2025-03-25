@@ -1,15 +1,96 @@
-{% extends 'base.html' %}
 {% load static %}
 
 {% block title %}Manage Group Conference{% endblock %}
 
 {% block content %}
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Arial', sans-serif;
+    }
+    .container {
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+    .card {
+        border: none;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+    .card-header {
+        background: linear-gradient(to right, #4a6cf7, #3a5ede);
+        color: white;
+        padding: 1rem 1.5rem;
+        display: flex;
+        align-items: center;
+    }
+    .card-header h4 {
+        margin: 0;
+        font-weight: 600;
+    }
+    .card-body {
+        padding: 2rem;
+        background-color: white;
+    }
+    .form-group label {
+        font-weight: 600;
+        color: #4a5568;
+        margin-bottom: 0.5rem;
+    }
+    .form-control {
+        border-color: #e2e8f0;
+        border-radius: 6px;
+        padding: 0.75rem;
+        transition: all 0.3s ease;
+    }
+    .form-control:focus {
+        border-color: #4a6cf7;
+        box-shadow: 0 0 0 3px rgba(74, 108, 247, 0.1);
+    }
+    .btn-primary {
+        background: linear-gradient(to right, #4a6cf7, #3a5ede);
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        transition: transform 0.2s ease;
+    }
+    .btn-primary:hover {
+        transform: translateY(-3px);
+        background: linear-gradient(to right, #3a5ede, #2e4acf);
+    }
+    .input-group-append .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+        border-color: #e2e8f0;
+        color: #4a5568;
+    }
+    .mt-4 {
+        margin-top: 2rem;
+        border-top: 1px solid #e2e8f0;
+        padding-top: 1.5rem;
+    }
+    input[readonly] {
+        background-color: #f7fafc;
+        cursor: text;
+    }
+    @media (max-width: 768px) {
+        .container {
+            width: 95%;
+            margin: 1rem auto;
+        }
+        .card-body {
+            padding: 1rem;
+        }
+    }
+</style>
+
 <div class="container mt-4">
     <div class="row">
-        <div class="col-md-8 mx-auto">
+        <div class="col-md-12 mx-auto">
             <div class="card">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0">Group Conference Settings</h4>
+                <div class="card-header">
+                    <h4>Group Conference Settings</h4>
                 </div>
                 <div class="card-body">
                     <form method="post">
@@ -59,4 +140,4 @@ function copyLink() {
     alert('Meeting link copied to clipboard!');
 }
 </script>
-{% endblock %} 
+{% endblock %}
